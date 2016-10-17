@@ -30,7 +30,7 @@ public class Test {
 		Transition t = new Transition();	
 		int[][] d = t.computeTransitionFunction(pattern, E);
 		
-		String s = "aaba";
+		String s = "abcababacaba";
 		char[] T = s.toCharArray();
 		
 		Matcher matcher = new Matcher();

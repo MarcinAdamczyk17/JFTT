@@ -11,21 +11,23 @@ public class Transition {
 	public int[][] computeTransitionFunction(String P, char[] E){
 		int m = P.length();
 		int k, q;
-		int[][] d = new int[m][E.length];
+		int[][] d = new int[m + 1][E.length];
 		
-		for(q = 0; q < m; q++){
-			for(char a : E){
+		for(q = 0; q <= m; q++){
+			for(char e : E){
 				k = Math.min(m + 1, q + 2);
+
 				do{
 					k--;
-				}while(P.substring(0, k).equals(P.substring(0, q) + a));
+				}while(!(P.substring(0, q) + Character.toString(e)).endsWith(P.substring(0, k)));
 				
-				d[q][a - 97] = k;
+				d[q][e - 97] = k;
 			}
 		}
 		print(d);
 		return d;
 	}
+
 
 	private void print(int[][] d) {
 		for(int i = 0; i < d.length; i++){

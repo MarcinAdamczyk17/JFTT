@@ -8,9 +8,10 @@ public class Matcher {
 		int s;
 		for(int i = 0; i < n; i++){
 			q = d[q][T[i] - 97];
+			System.out.println(q);
 			if(q == m){
-				s = i - m;
-				System.out.println("wzorzec z przesunieciem" + s);
+				s = i + 1 - m;
+				System.out.println("wzorzec z przesunieciem  " + s);
 			}
 		}
 	}
