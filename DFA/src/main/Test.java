@@ -23,14 +23,17 @@ public class Test {
 			System.out.println(scanner.nextLine());
 		}
 		*/
-		
-		String pattern = "ababaca";
-		char[] E = {'a', 'b', 'c'};
+		char[] E = new char[93];
+
+		String pattern = "abcababacaba#";
+		for (char i = 0; i < 93; ++i){
+			E[i] = (char)(i + 33);
+		}
 		
 		Transition t = new Transition();	
 		int[][] d = t.computeTransitionFunction(pattern, E);
 		
-		String s = "abcababacaba";
+		String s = "adceadabca#@babaabcababacaba#cabaa$#dceaab";
 		char[] T = s.toCharArray();
 		
 		Matcher matcher = new Matcher();
