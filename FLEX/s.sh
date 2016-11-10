@@ -1,6 +1,5 @@
 #!/bin/bash
 
-flex -o scan.c zad2.l
-gcc -O3 -o scan.exe scan.c
-./scan.exe < test.cpp
-
+flex -o scan.c zad4.l
+gcc -O2 -o scan.exe scan.c -lm
+./scan.exe < test.txt
