@@ -795,53 +795,53 @@ YY_RULE_SETUP
 case 6:
 YY_RULE_SETUP
 #line 19 "scan.l"
-{printf("+ ");return ADD;}
+{printf("+");return ADD;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 20 "scan.l"
-{printf("- ");return SUB;}
+{printf("-");return SUB;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 21 "scan.l"
-{printf("* ");return MUL;}
+{printf("*");return MUL;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 22 "scan.l"
-{printf("/ ");return DIV;}
+{printf("/");return DIV;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 23 "scan.l"
-{printf("^ ");return POW;}
+{printf("^");return POW;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 24 "scan.l"
-{yylval = atoi(yytext); printf("%d ", yylval);return NUMBER;}
+{yylval = atoi(yytext); printf("%d", yylval);return NUMBER;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 25 "scan.l"
-{printf("( ");return LB;}
+{printf("(");return LB;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 26 "scan.l"
-{printf(") ");return RB;}
+{printf(")");return RB;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 27 "scan.l"
-{printf("% ");return MOD;}
+{printf("%%");return MOD;}
 	YY_BREAK
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
 #line 28 "scan.l"
-{return '\n';}
+{printf("\n");return '\n';}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP

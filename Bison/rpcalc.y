@@ -42,8 +42,7 @@ exp:
   {
     if($3 != 0){
       $$ = $1 / $3;
-      printf(" / ");
-      strcat(output, " / ");
+      strcat(output, "/ ");
     }
     else{
       yyerror("error: dividing by 0\n\n");
@@ -66,15 +65,16 @@ void main(int argc, char** argv){
 
 void yyerror(char const *s){
   fprintf(stderr, "%s\n\n", s);
+  clearbuffers();
 }
 
 void clearbuffers(){
   int i;
   for(i = 0; i < 20; ++i){
-    buffer[i] = NULL;
+    buffer[i] = 0;
   }
   for(i = 0; i < 100; ++i){
-    output[i] = NULL;
+    output[i] = 0;
   }
 }
 

@@ -439,7 +439,7 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    26,    26,    27,    31,    32,    33,    37,    38,    39,
-      40,    41,    53,    54,    55,    56
+      40,    41,    52,    53,    54,    55
 };
 #endif
 
@@ -1263,43 +1263,42 @@ yyreduce:
     {
     if((yyvsp[0]) != 0){
       (yyval) = (yyvsp[-2]) / (yyvsp[0]);
-      printf(" / ");
-      strcat(output, " / ");
+      strcat(output, "/ ");
     }
     else{
       yyerror("error: dividing by 0\n\n");
       flag = 1;
     }
   }
-#line 1275 "rpcalc.c" /* yacc.c:1646  */
+#line 1274 "rpcalc.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 53 "rpcalc.y" /* yacc.c:1646  */
+#line 52 "rpcalc.y" /* yacc.c:1646  */
     {(yyval) = (yyvsp[-2]) % (yyvsp[0]);    strcat(output, "% ");}
-#line 1281 "rpcalc.c" /* yacc.c:1646  */
+#line 1280 "rpcalc.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 54 "rpcalc.y" /* yacc.c:1646  */
+#line 53 "rpcalc.y" /* yacc.c:1646  */
     {(yyval) = -(yyvsp[0]);        negate();}
-#line 1287 "rpcalc.c" /* yacc.c:1646  */
+#line 1286 "rpcalc.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 55 "rpcalc.y" /* yacc.c:1646  */
+#line 54 "rpcalc.y" /* yacc.c:1646  */
     {(yyval) = pow((yyvsp[-2]), (yyvsp[0]));strcat(output, "^ ");}
-#line 1293 "rpcalc.c" /* yacc.c:1646  */
+#line 1292 "rpcalc.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 56 "rpcalc.y" /* yacc.c:1646  */
+#line 55 "rpcalc.y" /* yacc.c:1646  */
     {(yyval) = (yyvsp[-1]);                       }
-#line 1299 "rpcalc.c" /* yacc.c:1646  */
+#line 1298 "rpcalc.c" /* yacc.c:1646  */
     break;
 
 
-#line 1303 "rpcalc.c" /* yacc.c:1646  */
+#line 1302 "rpcalc.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1527,7 +1526,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 58 "rpcalc.y" /* yacc.c:1906  */
+#line 57 "rpcalc.y" /* yacc.c:1906  */
 
 
 #include <ctype.h>
@@ -1539,15 +1538,16 @@ void main(int argc, char** argv){
 
 void yyerror(char const *s){
   fprintf(stderr, "%s\n\n", s);
+  clearbuffers();
 }
 
 void clearbuffers(){
   int i;
   for(i = 0; i < 20; ++i){
-    buffer[i] = NULL;
+    buffer[i] = 0;
   }
   for(i = 0; i < 100; ++i){
-    output[i] = NULL;
+    output[i] = 0;
   }
 }
 
