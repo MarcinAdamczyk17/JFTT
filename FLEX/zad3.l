@@ -36,7 +36,7 @@ WS [\t ]
 ^{WS}*"\/\/".*\n                    ;
 {WS}*"\/\/".*\n                     {printf("\n");}
 
-<SINGLE_LINE_PLUS>{WS}*.*\\{WS}*    ;
+<SINGLE_LINE_PLUS>{WS}*.*\\{WS}*\n    ;
 <SINGLE_LINE_PLUS>.                 ;
 <SINGLE_LINE_PLUS>\n                {BEGIN(INITIAL);}
 
