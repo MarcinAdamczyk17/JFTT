@@ -439,7 +439,7 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    26,    26,    27,    31,    32,    33,    37,    38,    39,
-      40,    41,    52,    53,    54,    55
+      40,    41,    52,    63,    64,    65
 };
 #endif
 
@@ -1274,31 +1274,40 @@ yyreduce:
     break;
 
   case 12:
-#line 52 "rpcalc.y" /* yacc.c:1646  */
-    {(yyval) = (yyvsp[-2]) % (yyvsp[0]);    strcat(output, "% ");}
-#line 1280 "rpcalc.c" /* yacc.c:1646  */
+#line 53 "rpcalc.y" /* yacc.c:1646  */
+    {
+    if((yyvsp[0]) != 0){
+      (yyval) = (yyvsp[-2]) % (yyvsp[0]);
+      strcat(output, "% ");
+    }
+    else{
+      yyerror("error: dividing mod\n\n");
+      flag = 1;
+    }
+  }
+#line 1289 "rpcalc.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 53 "rpcalc.y" /* yacc.c:1646  */
+#line 63 "rpcalc.y" /* yacc.c:1646  */
     {(yyval) = -(yyvsp[0]);        negate();}
-#line 1286 "rpcalc.c" /* yacc.c:1646  */
+#line 1295 "rpcalc.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 54 "rpcalc.y" /* yacc.c:1646  */
+#line 64 "rpcalc.y" /* yacc.c:1646  */
     {(yyval) = pow((yyvsp[-2]), (yyvsp[0]));strcat(output, "^ ");}
-#line 1292 "rpcalc.c" /* yacc.c:1646  */
+#line 1301 "rpcalc.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 55 "rpcalc.y" /* yacc.c:1646  */
+#line 65 "rpcalc.y" /* yacc.c:1646  */
     {(yyval) = (yyvsp[-1]);                       }
-#line 1298 "rpcalc.c" /* yacc.c:1646  */
+#line 1307 "rpcalc.c" /* yacc.c:1646  */
     break;
 
 
-#line 1302 "rpcalc.c" /* yacc.c:1646  */
+#line 1311 "rpcalc.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1526,7 +1535,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 57 "rpcalc.y" /* yacc.c:1906  */
+#line 67 "rpcalc.y" /* yacc.c:1906  */
 
 
 #include <ctype.h>

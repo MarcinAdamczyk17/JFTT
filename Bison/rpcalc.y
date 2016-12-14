@@ -49,7 +49,17 @@ exp:
       flag = 1;
     }
   }
-| exp MOD exp         {$$ = $1 % $3;    strcat(output, "% ");}
+| exp MOD exp
+  {
+    if($3 != 0){
+      $$ = $1 % $3;
+      strcat(output, "% ");
+    }
+    else{
+      yyerror("error: dividing mod\n\n");
+      flag = 1;
+    }
+  }
 | SUB exp %prec NEG   {$$ = -$2;        negate();}
 | exp POW exp         {$$ = pow($1, $3);strcat(output, "^ ");}
 | LB exp RB           {$$ = $2;                       }
