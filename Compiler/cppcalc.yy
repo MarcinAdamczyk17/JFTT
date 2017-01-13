@@ -5,17 +5,20 @@
 %define parser_class_name {cppcalc}
 
 %code requires{
-#include "variable.h"
 
+#include <cln/cln.h>
+#include <cln/number.h>
 #include <stdio.h>
 #include <iostream>
 #include <cstring>
 #include <string>
 #include <string.h>
 #include <vector>
+
 //#include "variable.h"
 using namespace std;
-
+using namespace cln;
+#include "variable.h"
 void declareVariable(char* name);
 void declareArray(char* name, int size);
 bool checkIfAlreadyDeclared(char* name);
@@ -27,19 +30,18 @@ var* getVariable(char* name);
 var* getArrayVariable(char* name, int position);
 int getArrayVariableValue(char* name, int position);
 void initializeArrayVariable(char* name, int position, int value);
+
+vector<string> genREAD(var* variable);
+void setRegister(int reg, int value);
+
 }
-
-%code top{
-
-
-}
-
 
 %union {
   char* sval;
   int ival;
   var* variable;
   char* code;
+  vector<string>* codeVector;
 }
 
 
@@ -83,7 +85,6 @@ void initializeArrayVariable(char* name, int position, int value);
 %token RIGHT_BRACKET LEFT_BRACKET
 %{
 extern int yylex(yy::cppcalc::semantic_type *yylval, yy::cppcalc::location_type* yylloc);
-void myout(int val, int radix);
 %}
 %initial-action {
 // Filename for locations here
@@ -93,17 +94,13 @@ void myout(int val, int radix);
 
 
 program:
-  VAR vdeclarations START code END				{cout << "END" << endl;}
-;
-
-code:
-    commands							{cout << "BEGIN" << endl;}
+  VAR vdeclarations START commands END
 ;
 
 vdeclarations:
   vdeclarations pidentifier					{declareVariable($2); cout << $2 << endl;}
-| vdeclarations pidentifier LEFT_BRACKET num RIGHT_BRACKET	{declareArray($2, $4);}
-|								{cout << "VAR" << endl;}
+| vdeclarations pidentifier LEFT_BRACKET num RIGHT_BRACKET	{declareArray($2, $4); cout << $2 << "[" << $4 << "]" << endl;}
+|
 ;
 
 commands:
@@ -117,7 +114,7 @@ command:
 | WHILE condition DO commands ENDWHILE
 | FOR pidentifier FROM value TO value DO commands ENDFOR
 | FOR pidentifier FROM value DOWNTO value DO commands ENDFOR
-| READ identifier SC	//{cout<<"podaj liczbe"; cin >> }
+| READ identifier SC	{genREAD($2);}
 | WRITE value SC
 | SKIP SC
 ;
@@ -146,7 +143,7 @@ value:
 ;
 
 identifier:
-  pidentifier							{$$ = getVariable($1);}
+  pidentifier							{$$ = getVariable($1); if($$ == nullptr) return 0;}
 | pidentifier LEFT_BRACKET pidentifier RIGHT_BRACKET		{$$ = getArrayVariable($1, getVariableValue($3));}
 | pidentifier LEFT_BRACKET num RIGHT_BRACKET			{$$ = getArrayVariable($1, $3);}
 ;
@@ -157,18 +154,38 @@ identifier:
 #include <vector>
 
 using namespace std;
-
+using namespace cln;
 //typedef basic_string<char> string;
 
 vector<var*> variablesContainer;
-
+vector<string> code;
+int registers [5] = {0,0,0,0,0};
 #include "variableOperations.h"
+
+vector<string> genREAD(var* variable){
+    code.push_back("GET 1");
+    setRegister(0, variable->memoryLocation);
+    code.push_back("STORE 1");
+
+    return code;
+}
+
+void setRegister(int reg, int value){
+    for(int i = 0; i < value - registers[reg]; ++i){
+	 code.push_back("INC " + to_string(reg));
+    }
+    registers[reg] = value;
+
+}
 
 
 void test(){
+    cl_I number = "1844674407370955162705479678643152978954540";
 
-    string a = "ala";
-    cout << a;
+    cout << sizeof(number) << endl;
+
+    cout << number << endl;
+
 }
 
 int main() {
@@ -177,6 +194,10 @@ int main() {
     cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
     yy::cppcalc parser;
     int v = parser.parse();
+
+    for(int i = 0; i < code.size(); ++i){
+	cout << code[i] << endl;
+    }
     return v;
 }
 

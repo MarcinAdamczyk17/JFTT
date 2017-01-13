@@ -42,17 +42,20 @@
 // //                    "%code requires" blocks.
 #line 7 "cppcalc.yy" // lalr1.cc:377
 
-#include "variable.h"
 
+#include <cln/cln.h>
+#include <cln/number.h>
 #include <stdio.h>
 #include <iostream>
 #include <cstring>
 #include <string>
 #include <string.h>
 #include <vector>
+
 //#include "variable.h"
 using namespace std;
-
+using namespace cln;
+#include "variable.h"
 void declareVariable(char* name);
 void declareArray(char* name, int size);
 bool checkIfAlreadyDeclared(char* name);
@@ -65,7 +68,11 @@ var* getArrayVariable(char* name, int position);
 int getArrayVariableValue(char* name, int position);
 void initializeArrayVariable(char* name, int position, int value);
 
-#line 69 "cppcalc.tab.hh" // lalr1.cc:377
+vector<string> genREAD(var* variable);
+void setRegister(int reg, int value);
+
+
+#line 76 "cppcalc.tab.hh" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -137,7 +144,7 @@ void initializeArrayVariable(char* name, int position, int value);
 
 
 namespace yy {
-#line 141 "cppcalc.tab.hh" // lalr1.cc:377
+#line 148 "cppcalc.tab.hh" // lalr1.cc:377
 
 
 
@@ -151,14 +158,15 @@ namespace yy {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 38 "cppcalc.yy" // lalr1.cc:377
+    #line 39 "cppcalc.yy" // lalr1.cc:377
 
   char* sval;
   int ival;
   var* variable;
   char* code;
+  vector<string>* codeVector;
 
-#line 162 "cppcalc.tab.hh" // lalr1.cc:377
+#line 170 "cppcalc.tab.hh" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -519,8 +527,8 @@ namespace yy {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 167,     ///< Last index in yytable_.
-      yynnts_ = 10,  ///< Number of nonterminal symbols.
+      yylast_ = 185,     ///< Last index in yytable_.
+      yynnts_ = 9,  ///< Number of nonterminal symbols.
       yyfinal_ = 4, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
@@ -533,7 +541,7 @@ namespace yy {
 
 
 } // yy
-#line 537 "cppcalc.tab.hh" // lalr1.cc:377
+#line 545 "cppcalc.tab.hh" // lalr1.cc:377
 
 
 

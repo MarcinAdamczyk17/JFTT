@@ -15,8 +15,9 @@ void declareVariable(char* name){
     variable->isArray = false;
     variable->name = name;
 
+    variable->memoryLocation = variablesContainer.size();
     variablesContainer.push_back(variable);
-    initializeVariable(name, 10);
+
 }
 
 void declareArray(char* name, int size){
@@ -54,6 +55,7 @@ var* getVariable(char* name){
 	    return variable;
 	}
     }
+    cout << "variable '" << name << "' not declared;" <<endl;
     return nullptr;
 }
 

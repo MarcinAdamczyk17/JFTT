@@ -29,18 +29,11 @@
 
 // This special exception was added by the Free Software Foundation in
 // version 2.2 of Bison.
-// //                    "%code top" blocks.
-#line 32 "cppcalc.yy" // lalr1.cc:397
-
-
-
-
-#line 39 "cppcalc.tab.cc" // lalr1.cc:397
 
 
 // First part of user declarations.
 
-#line 44 "cppcalc.tab.cc" // lalr1.cc:404
+#line 37 "cppcalc.tab.cc" // lalr1.cc:404
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -53,12 +46,11 @@
 #include "cppcalc.tab.hh"
 
 // User implementation prologue.
-#line 84 "cppcalc.yy" // lalr1.cc:412
+#line 86 "cppcalc.yy" // lalr1.cc:412
 
 extern int yylex(yy::cppcalc::semantic_type *yylval, yy::cppcalc::location_type* yylloc);
-void myout(int val, int radix);
 
-#line 62 "cppcalc.tab.cc" // lalr1.cc:412
+#line 54 "cppcalc.tab.cc" // lalr1.cc:412
 
 
 #ifndef YY_
@@ -144,7 +136,7 @@ void myout(int val, int radix);
 
 
 namespace yy {
-#line 148 "cppcalc.tab.cc" // lalr1.cc:479
+#line 140 "cppcalc.tab.cc" // lalr1.cc:479
 
   /// Build a parser object.
   cppcalc::cppcalc ()
@@ -477,13 +469,13 @@ namespace yy {
 
 
     // User initialization code.
-    #line 88 "cppcalc.yy" // lalr1.cc:741
+    #line 89 "cppcalc.yy" // lalr1.cc:741
 {
 // Filename for locations here
 //@$.begin.filename = @$.end.filename = new std::string("stdin");
 }
 
-#line 487 "cppcalc.tab.cc" // lalr1.cc:741
+#line 479 "cppcalc.tab.cc" // lalr1.cc:741
 
     /* Initialize the stack.  The initial state will be set in
        yynewstate, since the latter expects the semantical and the
@@ -590,68 +582,56 @@ namespace yy {
         {
           switch (yyn)
             {
-  case 2:
-#line 96 "cppcalc.yy" // lalr1.cc:859
-    {cout << "END" << endl;}
-#line 597 "cppcalc.tab.cc" // lalr1.cc:859
-    break;
-
   case 3:
-#line 100 "cppcalc.yy" // lalr1.cc:859
-    {cout << "BEGIN" << endl;}
-#line 603 "cppcalc.tab.cc" // lalr1.cc:859
+#line 101 "cppcalc.yy" // lalr1.cc:859
+    {declareVariable((yystack_[0].value.sval)); cout << (yystack_[0].value.sval) << endl;}
+#line 589 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 4:
-#line 104 "cppcalc.yy" // lalr1.cc:859
-    {declareVariable((yystack_[0].value.sval)); cout << (yystack_[0].value.sval) << endl;}
-#line 609 "cppcalc.tab.cc" // lalr1.cc:859
+#line 102 "cppcalc.yy" // lalr1.cc:859
+    {declareArray((yystack_[3].value.sval), (yystack_[1].value.ival)); cout << (yystack_[3].value.sval) << "[" << (yystack_[1].value.ival) << "]" << endl;}
+#line 595 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
-  case 5:
-#line 105 "cppcalc.yy" // lalr1.cc:859
-    {declareArray((yystack_[3].value.sval), (yystack_[1].value.ival));}
-#line 615 "cppcalc.tab.cc" // lalr1.cc:859
-    break;
-
-  case 6:
-#line 106 "cppcalc.yy" // lalr1.cc:859
-    {cout << "VAR" << endl;}
-#line 621 "cppcalc.tab.cc" // lalr1.cc:859
-    break;
-
-  case 9:
-#line 115 "cppcalc.yy" // lalr1.cc:859
+  case 8:
+#line 112 "cppcalc.yy" // lalr1.cc:859
     {(yystack_[3].value.variable)->value = (yystack_[1].value.ival);}
-#line 627 "cppcalc.tab.cc" // lalr1.cc:859
+#line 601 "cppcalc.tab.cc" // lalr1.cc:859
+    break;
+
+  case 13:
+#line 117 "cppcalc.yy" // lalr1.cc:859
+    {genREAD((yystack_[1].value.variable));}
+#line 607 "cppcalc.tab.cc" // lalr1.cc:859
+    break;
+
+  case 29:
+#line 142 "cppcalc.yy" // lalr1.cc:859
+    {(yylhs.value.ival) = (yystack_[0].value.variable)->value;}
+#line 613 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 30:
-#line 145 "cppcalc.yy" // lalr1.cc:859
-    {(yylhs.value.ival) = (yystack_[0].value.variable)->value;}
-#line 633 "cppcalc.tab.cc" // lalr1.cc:859
+#line 146 "cppcalc.yy" // lalr1.cc:859
+    {(yylhs.value.variable) = getVariable((yystack_[0].value.sval)); if((yylhs.value.variable) == nullptr) return 0;}
+#line 619 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 31:
-#line 149 "cppcalc.yy" // lalr1.cc:859
-    {(yylhs.value.variable) = getVariable((yystack_[0].value.sval));}
-#line 639 "cppcalc.tab.cc" // lalr1.cc:859
+#line 147 "cppcalc.yy" // lalr1.cc:859
+    {(yylhs.value.variable) = getArrayVariable((yystack_[3].value.sval), getVariableValue((yystack_[1].value.sval)));}
+#line 625 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 32:
-#line 150 "cppcalc.yy" // lalr1.cc:859
-    {(yylhs.value.variable) = getArrayVariable((yystack_[3].value.sval), getVariableValue((yystack_[1].value.sval)));}
-#line 645 "cppcalc.tab.cc" // lalr1.cc:859
-    break;
-
-  case 33:
-#line 151 "cppcalc.yy" // lalr1.cc:859
+#line 148 "cppcalc.yy" // lalr1.cc:859
     {(yylhs.value.variable) = getArrayVariable((yystack_[3].value.sval), (yystack_[1].value.ival));}
-#line 651 "cppcalc.tab.cc" // lalr1.cc:859
+#line 631 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
 
-#line 655 "cppcalc.tab.cc" // lalr1.cc:859
+#line 635 "cppcalc.tab.cc" // lalr1.cc:859
             default:
               break;
             }
@@ -817,124 +797,128 @@ namespace yy {
   }
 
 
-  const signed char cppcalc::yypact_ninf_ = -33;
+  const signed char cppcalc::yypact_ninf_ = -36;
 
   const signed char cppcalc::yytable_ninf_ = -1;
 
   const short int
   cppcalc::yypact_[] =
   {
-      14,   -33,    32,     2,   -33,   138,   -21,   -26,   -26,     4,
-      13,   -26,    24,     7,    45,   138,   -33,    36,    30,   -33,
-      56,    -1,   -33,    53,    51,    46,    50,   -33,   -17,   -33,
-     -33,   -26,    28,   138,   -26,   -26,   -26,   -26,   -26,   -26,
-     138,   -26,   -33,   -33,    34,    35,    57,     6,   -33,     1,
-     -33,   -33,   -33,   -33,   -33,   -33,    78,     0,   -33,   -33,
-     -33,   -26,   -26,   -26,   -26,   -26,   138,   -33,   -26,   -26,
-     -33,   -33,   -33,   -33,   -33,    93,    74,    81,   -33,   138,
-     138,   108,   123,   -33,   -33
+       5,   -36,     2,    -1,   -36,   156,   -35,   -17,   -17,   -19,
+     -14,   -17,    10,    -7,     1,   -36,     0,    -4,   -36,    26,
+      13,   -36,    33,    31,    25,    36,   -36,   -12,   -36,   -36,
+     -17,    21,   156,   -17,   -17,   -17,   -17,   -17,   -17,   156,
+     -17,   -36,   -36,    27,    28,    43,   146,   -36,    81,   -36,
+     -36,   -36,   -36,   -36,   -36,    96,     9,   -36,   -36,   -36,
+     -17,   -17,   -17,   -17,   -17,   156,   -36,   -17,   -17,   -36,
+     -36,   -36,   -36,   -36,   111,    59,    60,   -36,   156,   156,
+     126,   141,   -36,   -36
   };
 
   const unsigned char
   cppcalc::yydefact_[] =
   {
-       0,     6,     0,     0,     1,     0,     4,     0,     0,     0,
-       0,     0,     0,    31,     0,     3,     8,     0,     0,    29,
-       0,     0,    30,     0,     0,     0,     0,    16,     0,     2,
-       7,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,    14,    15,     0,     0,     0,    17,     5,     0,
-      23,    24,    25,    26,    27,    28,     0,     0,    32,    33,
-       9,     0,     0,     0,     0,     0,     0,    11,     0,     0,
-      19,    18,    20,    21,    22,     0,     0,     0,    10,     0,
-       0,     0,     0,    12,    13
+       0,     5,     0,     0,     1,     0,     3,     0,     0,     0,
+       0,     0,     0,    30,     0,     7,     0,     0,    28,     0,
+       0,    29,     0,     0,     0,     0,    15,     0,     2,     6,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,    13,    14,     0,     0,     0,    16,     4,     0,    22,
+      23,    24,    25,    26,    27,     0,     0,    31,    32,     8,
+       0,     0,     0,     0,     0,     0,    10,     0,     0,    18,
+      17,    19,    20,    21,     0,     0,     0,     9,     0,     0,
+       0,     0,    11,    12
   };
 
   const signed char
   cppcalc::yypgoto_[] =
   {
-     -33,   -33,   -33,   -33,   -32,   -13,   -33,    85,    18,    -5
+     -36,   -36,   -36,   -16,   -13,   -36,    39,    18,    -5
   };
 
   const signed char
   cppcalc::yydefgoto_[] =
   {
-      -1,     2,    14,     3,    15,    16,    46,    20,    21,    22
+      -1,     2,     3,    14,    15,    45,    19,    20,    21
   };
 
   const unsigned char
   cppcalc::yytable_[] =
   {
-      17,    49,    30,    13,    19,    25,     5,     7,    56,    66,
-      17,     8,    44,    45,     9,    68,    69,     1,    18,    10,
-      11,    12,    34,    35,    36,    37,    38,    39,    17,    26,
-      13,     6,     4,    24,    75,    17,    30,    61,    62,    63,
-      64,    65,    13,    30,    17,    27,    28,    81,    82,    47,
-      29,    17,    50,    51,    52,    53,    54,    55,    31,    57,
-      32,    17,    30,    33,    40,    41,    48,    42,    30,    30,
-      17,    43,    58,    59,    17,    17,    17,    17,    60,    70,
-      71,    72,    73,    74,     7,    79,    76,    77,     8,     0,
-      67,     9,    80,    23,     0,     0,    10,    11,    12,     7,
-       0,     0,    78,     8,     0,     0,     9,    13,     0,     0,
-       0,    10,    11,    12,     7,     0,     0,     0,     8,     0,
-       0,     9,    13,     0,     0,    83,    10,    11,    12,     7,
-       0,     0,     0,     8,     0,     0,     9,    13,     0,     0,
-      84,    10,    11,    12,     7,     0,     0,     0,     8,     0,
-       0,     9,    13,     0,     0,     0,    10,    11,    12,     0,
-       0,     0,     0,     0,     0,     0,     0,    13
+      16,    29,     4,     5,    17,    24,    28,     7,     1,    16,
+      23,     8,    13,    18,     9,    13,    48,    43,    44,    10,
+      11,    12,    30,    55,    67,    68,    31,    16,     6,    25,
+      13,    26,    27,    32,    16,    29,    33,    34,    35,    36,
+      37,    38,    29,    16,    39,    40,    41,    22,    46,    74,
+      16,    49,    50,    51,    52,    53,    54,    42,    56,    47,
+      16,    29,    80,    81,    59,    57,    58,    29,    29,    16,
+      78,    79,     0,    16,    16,    16,    16,     0,    69,    70,
+      71,    72,    73,     0,     0,    75,    76,     7,     0,    65,
+       0,     8,     0,     0,     9,     0,     0,     0,     0,    10,
+      11,    12,     7,     0,     0,     0,     8,     0,    66,     9,
+      13,     0,     0,     0,    10,    11,    12,     7,     0,     0,
+      77,     8,     0,     0,     9,    13,     0,     0,     0,    10,
+      11,    12,     7,     0,     0,     0,     8,     0,     0,     9,
+      13,     0,     0,    82,    10,    11,    12,     7,     0,     0,
+       0,     8,     0,     0,     9,    13,     0,     0,    83,    10,
+      11,    12,     7,     0,     0,     0,     8,     0,     0,     9,
+      13,     0,     0,     0,    10,    11,    12,    60,    61,    62,
+      63,    64,     0,     0,     0,    13
   };
 
   const signed char
   cppcalc::yycheck_[] =
   {
-       5,    33,    15,    29,    30,    10,     4,     6,    40,     8,
-      15,    10,    29,    30,    13,    15,    16,     3,    39,    18,
-      19,    20,    23,    24,    25,    26,    27,    28,    33,    11,
-      29,    29,     0,    29,    66,    40,    49,    31,    32,    33,
-      34,    35,    29,    56,    49,    21,    39,    79,    80,    31,
-       5,    56,    34,    35,    36,    37,    38,    39,    22,    41,
-      30,    66,    75,     7,    11,    14,    38,    21,    81,    82,
-      75,    21,    38,    38,    79,    80,    81,    82,    21,    61,
-      62,    63,    64,    65,     6,    11,    68,    69,    10,    -1,
-      12,    13,    11,     8,    -1,    -1,    18,    19,    20,     6,
-      -1,    -1,     9,    10,    -1,    -1,    13,    29,    -1,    -1,
-      -1,    18,    19,    20,     6,    -1,    -1,    -1,    10,    -1,
-      -1,    13,    29,    -1,    -1,    17,    18,    19,    20,     6,
-      -1,    -1,    -1,    10,    -1,    -1,    13,    29,    -1,    -1,
-      17,    18,    19,    20,     6,    -1,    -1,    -1,    10,    -1,
-      -1,    13,    29,    -1,    -1,    -1,    18,    19,    20,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    29
+       5,    14,     0,     4,    39,    10,     5,     6,     3,    14,
+      29,    10,    29,    30,    13,    29,    32,    29,    30,    18,
+      19,    20,    22,    39,    15,    16,    30,    32,    29,    11,
+      29,    21,    39,     7,    39,    48,    23,    24,    25,    26,
+      27,    28,    55,    48,    11,    14,    21,     8,    30,    65,
+      55,    33,    34,    35,    36,    37,    38,    21,    40,    38,
+      65,    74,    78,    79,    21,    38,    38,    80,    81,    74,
+      11,    11,    -1,    78,    79,    80,    81,    -1,    60,    61,
+      62,    63,    64,    -1,    -1,    67,    68,     6,    -1,     8,
+      -1,    10,    -1,    -1,    13,    -1,    -1,    -1,    -1,    18,
+      19,    20,     6,    -1,    -1,    -1,    10,    -1,    12,    13,
+      29,    -1,    -1,    -1,    18,    19,    20,     6,    -1,    -1,
+       9,    10,    -1,    -1,    13,    29,    -1,    -1,    -1,    18,
+      19,    20,     6,    -1,    -1,    -1,    10,    -1,    -1,    13,
+      29,    -1,    -1,    17,    18,    19,    20,     6,    -1,    -1,
+      -1,    10,    -1,    -1,    13,    29,    -1,    -1,    17,    18,
+      19,    20,     6,    -1,    -1,    -1,    10,    -1,    -1,    13,
+      29,    -1,    -1,    -1,    18,    19,    20,    31,    32,    33,
+      34,    35,    -1,    -1,    -1,    29
   };
 
   const unsigned char
   cppcalc::yystos_[] =
   {
-       0,     3,    41,    43,     0,     4,    29,     6,    10,    13,
-      18,    19,    20,    29,    42,    44,    45,    49,    39,    30,
-      47,    48,    49,    47,    29,    49,    48,    21,    39,     5,
-      45,    22,    30,     7,    23,    24,    25,    26,    27,    28,
-      11,    14,    21,    21,    29,    30,    46,    48,    38,    44,
-      48,    48,    48,    48,    48,    48,    44,    48,    38,    38,
-      21,    31,    32,    33,    34,    35,     8,    12,    15,    16,
-      48,    48,    48,    48,    48,    44,    48,    48,     9,    11,
-      11,    44,    44,    17,    17
+       0,     3,    41,    42,     0,     4,    29,     6,    10,    13,
+      18,    19,    20,    29,    43,    44,    48,    39,    30,    46,
+      47,    48,    46,    29,    48,    47,    21,    39,     5,    44,
+      22,    30,     7,    23,    24,    25,    26,    27,    28,    11,
+      14,    21,    21,    29,    30,    45,    47,    38,    43,    47,
+      47,    47,    47,    47,    47,    43,    47,    38,    38,    21,
+      31,    32,    33,    34,    35,     8,    12,    15,    16,    47,
+      47,    47,    47,    47,    43,    47,    47,     9,    11,    11,
+      43,    43,    17,    17
   };
 
   const unsigned char
   cppcalc::yyr1_[] =
   {
-       0,    40,    41,    42,    43,    43,    43,    44,    44,    45,
-      45,    45,    45,    45,    45,    45,    45,    46,    46,    46,
-      46,    46,    46,    47,    47,    47,    47,    47,    47,    48,
-      48,    49,    49,    49
+       0,    40,    41,    42,    42,    42,    43,    43,    44,    44,
+      44,    44,    44,    44,    44,    44,    45,    45,    45,    45,
+      45,    45,    46,    46,    46,    46,    46,    46,    47,    47,
+      48,    48,    48
   };
 
   const unsigned char
   cppcalc::yyr2_[] =
   {
-       0,     2,     5,     1,     2,     5,     0,     2,     1,     4,
-       7,     5,     9,     9,     3,     3,     2,     1,     3,     3,
-       3,     3,     3,     3,     3,     3,     3,     3,     3,     1,
-       1,     1,     4,     4
+       0,     2,     5,     2,     5,     0,     2,     1,     4,     7,
+       5,     9,     9,     3,     3,     2,     1,     3,     3,     3,
+       3,     3,     3,     3,     3,     3,     3,     3,     1,     1,
+       1,     4,     4
   };
 
 
@@ -950,7 +934,7 @@ namespace yy {
   "DIFFERENT", "SMALLER_THAN", "BIGGER_THAN", "SMALLER_THAN_OR_EQUAL",
   "BIGGER_THAN_OR_EQUAL", "pidentifier", "num", "SUB", "ADD", "MULT",
   "DIV", "MOD", "NEG", "POW", "RIGHT_BRACKET", "LEFT_BRACKET", "$accept",
-  "program", "code", "vdeclarations", "commands", "command", "expression",
+  "program", "vdeclarations", "commands", "command", "expression",
   "condition", "value", "identifier", YY_NULLPTR
   };
 
@@ -958,10 +942,10 @@ namespace yy {
   const unsigned char
   cppcalc::yyrline_[] =
   {
-       0,    96,    96,   100,   104,   105,   106,   110,   111,   115,
-     116,   117,   118,   119,   120,   121,   122,   126,   127,   128,
-     129,   130,   131,   135,   136,   137,   138,   139,   140,   144,
-     145,   149,   150,   151
+       0,    97,    97,   101,   102,   103,   107,   108,   112,   113,
+     114,   115,   116,   117,   118,   119,   123,   124,   125,   126,
+     127,   128,   132,   133,   134,   135,   136,   137,   141,   142,
+     146,   147,   148
   };
 
   // Print the state stack on the debug stream.
@@ -1046,26 +1030,46 @@ namespace yy {
 
 
 } // yy
-#line 1050 "cppcalc.tab.cc" // lalr1.cc:1167
-#line 154 "cppcalc.yy" // lalr1.cc:1168
+#line 1034 "cppcalc.tab.cc" // lalr1.cc:1167
+#line 151 "cppcalc.yy" // lalr1.cc:1168
 
 #include <cstring>
 #include <string.h>
 #include <vector>
 
 using namespace std;
-
+using namespace cln;
 //typedef basic_string<char> string;
 
 vector<var*> variablesContainer;
-
+vector<string> code;
+int registers [5] = {0,0,0,0,0};
 #include "variableOperations.h"
+
+vector<string> genREAD(var* variable){
+    code.push_back("GET 1");
+    setRegister(0, variable->memoryLocation);
+    code.push_back("STORE 1");
+
+    return code;
+}
+
+void setRegister(int reg, int value){
+    for(int i = 0; i < value - registers[reg]; ++i){
+	 code.push_back("INC " + to_string(reg));
+    }
+    registers[reg] = value;
+
+}
 
 
 void test(){
+    cl_I number = "1844674407370955162705479678643152978954540";
 
-    string a = "ala";
-    cout << a;
+    cout << sizeof(number) << endl;
+
+    cout << number << endl;
+
 }
 
 int main() {
@@ -1074,6 +1078,10 @@ int main() {
     cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
     yy::cppcalc parser;
     int v = parser.parse();
+
+    for(int i = 0; i < code.size(); ++i){
+	cout << code[i] << endl;
+    }
     return v;
 }
 
