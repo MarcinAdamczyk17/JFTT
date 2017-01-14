@@ -1,5 +1,6 @@
 var* createVariable(){
     var* variable = (var*) malloc(sizeof(var*));
+    variable->name = (char*) malloc(sizeof(char)*20);
     variable->isArray = false;
     variable->isInitialized = false;
     return variable;

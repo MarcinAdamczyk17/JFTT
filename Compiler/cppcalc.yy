@@ -5,7 +5,7 @@
 %define parser_class_name {cppcalc}
 
 %code requires{
-
+#define debugger 0
 #include <cln/cln.h>
 #include <cln/number.h>
 #include <stdio.h>
@@ -31,17 +31,32 @@ var* getArrayVariable(char* name, int position);
 int getArrayVariableValue(char* name, int position);
 void initializeArrayVariable(char* name, int position, int value);
 
-vector<string> genREAD(var* variable);
-void setRegister(int reg, int value);
+int genASSIGN(var *variable);
+int genWHILE(cond *codition, int pos);
+int genREAD(var* variable);
+int genWRITE(val* value);
 
+void genNoOP(val* value);
+void genADD(int l, int r);
+
+
+void setRegister(int reg, int value, vector<string> &code);
+
+val* newValue(var* variable);
+val* newValue(int value);
+cond* newCondition(val* val1, string op, val* val2);
+
+void printVec(vector<string> &v);
+int concatenateCodes(int v1, int v2);
+void endThisShit();
 }
 
 %union {
   char* sval;
   int ival;
   var* variable;
-  char* code;
-  vector<string>* codeVector;
+  val* value;
+  cond* condition;
 }
 
 
@@ -75,8 +90,10 @@ void setRegister(int reg, int value);
 %token num
 
 %type <sval> pidentifier
-%type <ival> num value expression
+%type <ival> num command commands
+%type <value> value
 %type <variable> identifier
+%type <condition> condition
 
 %left SUB ADD
 %left MULT DIV MOD
@@ -94,33 +111,33 @@ extern int yylex(yy::cppcalc::semantic_type *yylval, yy::cppcalc::location_type*
 
 
 program:
-  VAR vdeclarations START commands END
+  VAR vdeclarations START commands END				{endThisShit();}
 ;
 
 vdeclarations:
-  vdeclarations pidentifier					{declareVariable($2); cout << $2 << endl;}
-| vdeclarations pidentifier LEFT_BRACKET num RIGHT_BRACKET	{declareArray($2, $4); cout << $2 << "[" << $4 << "]" << endl;}
+  vdeclarations pidentifier					{declareVariable($2);}
+| vdeclarations pidentifier LEFT_BRACKET num RIGHT_BRACKET	{declareArray($2, $4);}
 |
 ;
 
 commands:
-  commands command
-| command
+  commands command						{if(debugger) cout << "continue" << endl;   $$ = concatenateCodes($1, $2);}
+| command							{if(debugger) cout << "reduce" << endl;	    $$ = $1;}
 ;
 
 command:
-  identifier ASSIGN expression SC				{$1->value = $3;}
-| IF condition THEN commands ELSE commands ENDIF
-| WHILE condition DO commands ENDWHILE
-| FOR pidentifier FROM value TO value DO commands ENDFOR
-| FOR pidentifier FROM value DOWNTO value DO commands ENDFOR
-| READ identifier SC	{genREAD($2);}
-| WRITE value SC
-| SKIP SC
+  identifier ASSIGN expression SC				{if(debugger) cout << "assign" << endl;	    $$ = genASSIGN($1);}
+| IF condition THEN commands ELSE commands ENDIF		{if(debugger) cout << "if" << endl;	    }
+| WHILE condition DO commands ENDWHILE				{if(1) cout << "while" << $4 << endl;	    $$ = genWHILE($2, $4);}
+| FOR pidentifier FROM value TO value DO commands ENDFOR	{if(debugger) cout << "for to" << endl;	    }
+| FOR pidentifier FROM value DOWNTO value DO commands ENDFOR	{if(debugger) cout << "for down" << endl;   }
+| READ identifier SC						{if(debugger) cout << "read" << endl;	    $$ = genREAD($2);}
+| WRITE value SC						{if(debugger) cout << "write" << endl;	    $$ = genWRITE($2);}
+| SKIP SC							{if(debugger) cout << "skip" << endl;	    }
 ;
 
 expression:
-  value
+  value								{genNoOP($1);}
 | value ADD value
 | value SUB value
 | value MULT value
@@ -129,17 +146,17 @@ expression:
 ;
 
 condition:
-  value EQUAL value
-| value DIFFERENT value
-| value SMALLER_THAN value
-| value BIGGER_THAN value
-| value SMALLER_THAN_OR_EQUAL value
-| value BIGGER_THAN_OR_EQUAL value
+  value EQUAL value						{$$ = newCondition($1, "EQ", $3);}
+| value DIFFERENT value						{$$ = newCondition($1, "DI", $3);}
+| value SMALLER_THAN value					{$$ = newCondition($1, "ST", $3);}
+| value BIGGER_THAN value					{$$ = newCondition($1, "BT", $3);}
+| value SMALLER_THAN_OR_EQUAL value				{$$ = newCondition($1, "SE", $3);}
+| value BIGGER_THAN_OR_EQUAL value				{$$ = newCondition($1, "BE", $3);}
 ;
 
 value:
-  num
-| identifier							{$$ = $1->value;}
+  num								{$$ = newValue($1);}
+| identifier							{$$ = newValue($1);}
 ;
 
 identifier:
@@ -159,45 +176,211 @@ using namespace cln;
 
 vector<var*> variablesContainer;
 vector<string> code;
+vector<vector<string>> codes;
 int registers [5] = {0,0,0,0,0};
 #include "variableOperations.h"
 
-vector<string> genREAD(var* variable){
-    code.push_back("GET 1");
-    setRegister(0, variable->memoryLocation);
+int genASSIGN(var* variable){
+    vector<string> code = codes[codes.size()-1];
+    setRegister(0, variable->memoryLocation, code);
     code.push_back("STORE 1");
-
-    return code;
+    codes[codes.size()-1] = code;
+    return codes.size()-1;
 }
 
-void setRegister(int reg, int value){
-    for(int i = 0; i < value - registers[reg]; ++i){
+int genWHILE(cond* condition, int pos){
+
+    vector<string> code;
+    string op = condition->op;
+    val* v1 = condition->val1;
+    val* v2 = condition->val2;
+    //cout << "gen while v1 " << v1->variable->value << endl;
+    //cout << "gen while v2 " << v2->variable->value << endl;
+    if(!op.compare("EQ")){
+	cout << "eq" << endl;
+    }
+    else if (!op.compare("DI")) {
+	cout << "di" << endl;
+    }
+    else if (!op.compare("ST")) {
+	cout << "st" << endl;
+    }
+    else if (!op.compare("BT")) {
+	cout << "bt" << endl;
+	if(v1->variable != nullptr){
+	    setRegister(0, v1->variable->memoryLocation, code);
+	    code.push_back("LOAD 1");
+	}
+	else{
+	    setRegister(1, v1->value, code);
+	}
+
+	if(v2->variable != nullptr){
+	    setRegister(0, v2->variable->memoryLocation, code);
+	    code.push_back("SUB 1");
+	}
+	else{
+	    setRegister(0, variablesContainer.size(), code);
+	    setRegister(2, v2->value, code);
+	    code.push_back("STORE 2");
+	    code.push_back("SUB 1");
+	}
+	code.push_back("JZERO " + to_string(codes[pos].size()+2));
+	//cout << endl << endl;
+	//printVec(code);
+    }
+    else if (!op.compare("SE")) {
+	cout << "se" << endl;
+    }
+    else if (!op.compare("BE")) {
+	cout << "be" << endl;
+    }
+
+    vector<string> result;
+    result.reserve( code.size() + codes[pos].size() );
+    result.insert( result.end(), code.begin(), code.end() );
+    result.insert( result.end(), codes[pos].begin(), codes[pos].end() );
+    result.push_back("JUMP -" + to_string(codes[pos].size() + code.size()));
+    codes.push_back(result);
+    return codes.size()-1;
+}
+
+int genREAD(var* variable){
+    vector<string> code;
+    code.push_back("GET 1");
+    setRegister(0, variable->memoryLocation, code);
+    code.push_back("STORE 1");
+    codes.push_back(code);
+    return codes.size() - 1;
+}
+
+int genWRITE(val* value){
+    vector<string> code;
+
+    if(value->variable != nullptr){
+	setRegister(0, value->variable->memoryLocation, code);
+	code.push_back("LOAD 1");
+	code.push_back("PUT 1");
+    }
+    else{
+	setRegister(1, value->value, code);
+	code.push_back("PUT 1");
+    }
+    codes.push_back(code);
+
+    return codes.size() - 1;
+}
+
+void genNoOP(val* value){
+    vector<string> code;
+
+    if(value->variable != nullptr){
+	setRegister(0, value->variable->memoryLocation, code);
+	code.push_back("LOAD 1");
+    }
+    else{
+	setRegister(1, value->value, code);
+    }
+    codes.push_back(code);
+}
+
+void genADD(int l, int r){}
+
+void setRegister(int reg, int value, vector<string> &code){
+    code.push_back("ZERO " + to_string(reg));
+    registers[reg] = 0;
+
+    for(int i = 0; i < value; ++i){
 	 code.push_back("INC " + to_string(reg));
     }
     registers[reg] = value;
+}
 
+val* newValue(var* variable){
+    val* value = (val*)malloc(sizeof(val));
+    value->variable = variable;
+
+    return value;
+}
+
+val* newValue(int number){
+    val* value = (val*)malloc(sizeof(val));
+    value->variable = nullptr;
+    value->value = number;
+
+    return value;
+}
+
+cond* newCondition(val* val1, string op, val* val2){
+    cond* condition = (cond*)malloc(sizeof(cond));
+    condition->val1 = val1;
+    condition->op = op;
+    condition->val2 = val2;
+    return condition;
+}
+
+int concatenateCodes(int v1, int v2){
+    cout << v1 << "  " << v2 << endl;
+    vector<string> code;
+    code.reserve(codes[v1].size() + codes[v2].size());
+    code.insert( code.end(), codes[v1].begin(), codes[v1].end() );
+    code.insert( code.end(), codes[v2].begin(), codes[v2].end() );
+
+    codes.push_back(code);
+    return codes.size()-1;
 }
 
 
-void test(){
-    cl_I number = "1844674407370955162705479678643152978954540";
 
-    cout << sizeof(number) << endl;
+void endThisShit(){
+    codes[codes.size()-1].push_back("HALT");
 
-    cout << number << endl;
+}
 
+void printVec(vector<string> &v){
+    for(int i = 0; i < v.size(); ++i){
+	cout << v[i] << endl;
+    }
+}
+
+void printVec(int i){
+    vector<string> v = codes[i];
+    for(int i = 0; i < v.size(); ++i){
+	cout << v[i] << endl;
+    }
 }
 
 int main() {
     //test();
 
-    cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+    cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n";
     yy::cppcalc parser;
     int v = parser.parse();
-
-    for(int i = 0; i < code.size(); ++i){
-	cout << code[i] << endl;
+    int k = 0;
+    int pos = codes.size()-1;
+    for(int j = 0; j < codes[pos].size(); ++j){
+	//cout << k << " ";
+	if(k < 10){
+	   // cout << " ";
+	}
+	cout << codes[pos][j] << endl;
+	++k;
     }
+    /*
+    for(int i = 0; i < codes.size(); ++i){
+	for(int j = 0; j < codes[i].size(); ++j){
+	    //cout << k << " ";
+	    if(k < 10){
+		//cout << " ";
+	    }
+	    cout << codes[i][j] << endl;
+	    ++k;
+	}
+	cout << endl;
+    }
+    */
+
+    {cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";}
     return v;
 }
 

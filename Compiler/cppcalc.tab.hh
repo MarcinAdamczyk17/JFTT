@@ -42,7 +42,7 @@
 // //                    "%code requires" blocks.
 #line 7 "cppcalc.yy" // lalr1.cc:377
 
-
+#define debugger 0
 #include <cln/cln.h>
 #include <cln/number.h>
 #include <stdio.h>
@@ -68,11 +68,26 @@ var* getArrayVariable(char* name, int position);
 int getArrayVariableValue(char* name, int position);
 void initializeArrayVariable(char* name, int position, int value);
 
-vector<string> genREAD(var* variable);
-void setRegister(int reg, int value);
+int genASSIGN(var *variable);
+int genWHILE(cond *codition, int pos);
+int genREAD(var* variable);
+int genWRITE(val* value);
+
+void genNoOP(val* value);
+void genADD(int l, int r);
 
 
-#line 76 "cppcalc.tab.hh" // lalr1.cc:377
+void setRegister(int reg, int value, vector<string> &code);
+
+val* newValue(var* variable);
+val* newValue(int value);
+cond* newCondition(val* val1, string op, val* val2);
+
+void printVec(vector<string> &v);
+int concatenateCodes(int v1, int v2);
+void endThisShit();
+
+#line 91 "cppcalc.tab.hh" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -144,7 +159,7 @@ void setRegister(int reg, int value);
 
 
 namespace yy {
-#line 148 "cppcalc.tab.hh" // lalr1.cc:377
+#line 163 "cppcalc.tab.hh" // lalr1.cc:377
 
 
 
@@ -158,15 +173,15 @@ namespace yy {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 39 "cppcalc.yy" // lalr1.cc:377
+    #line 54 "cppcalc.yy" // lalr1.cc:377
 
   char* sval;
   int ival;
   var* variable;
-  char* code;
-  vector<string>* codeVector;
+  val* value;
+  cond* condition;
 
-#line 170 "cppcalc.tab.hh" // lalr1.cc:377
+#line 185 "cppcalc.tab.hh" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -541,7 +556,7 @@ namespace yy {
 
 
 } // yy
-#line 545 "cppcalc.tab.hh" // lalr1.cc:377
+#line 560 "cppcalc.tab.hh" // lalr1.cc:377
 
 
 
