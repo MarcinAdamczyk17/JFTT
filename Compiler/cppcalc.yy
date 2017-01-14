@@ -225,7 +225,7 @@ int genWHILE(cond* condition, int pos){
 	    code.push_back("STORE 2");
 	    code.push_back("SUB 1");
 	}
-	code.push_back("JZERO " + to_string(codes[pos].size()+2));
+	code.push_back("JZERO 1 " + to_string(codes[pos].size()+2));
 	//cout << endl << endl;
 	//printVec(code);
     }
@@ -352,33 +352,36 @@ void printVec(int i){
 
 int main() {
     //test();
-
+    bool counter = true;
     cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n";
     yy::cppcalc parser;
     int v = parser.parse();
     int k = 0;
     int pos = codes.size()-1;
-    for(int j = 0; j < codes[pos].size(); ++j){
-	//cout << k << " ";
+
+    vector<string> result = codes[pos];
+
+    string delim = " ";
+    for(int j = 0; j < result.size(); ++j){
+	if(counter) cout << k << " ";
 	if(k < 10){
-	   // cout << " ";
+	   if(counter) cout << " ";
 	}
-	cout << codes[pos][j] << endl;
+	if(!result[j].substr(0, result[j].find(delim)).compare("JZERO")){
+	    int offset = stoi(result[j].substr(result[j].find(delim)+2, result[j].length()));
+	    result[j] = "JZERO 1 " + to_string(k + offset);
+	}
+	if(!result[j].substr(0, result[j].find(delim)).compare("JODD")){
+	    int offset = stoi(result[j].substr(result[j].find(delim)+2, result[j].length()));
+	    result[j] = "JODD 1 " + to_string(k + offset);
+	}
+	if(!result[j].substr(0, result[j].find(delim)).compare("JUMP")){
+	    int offset = stoi(result[j].substr(result[j].find(delim), result[j].length()));
+	    result[j] = "JUMP " + to_string(k + offset);
+	}
+	cout << result[j] << endl;
 	++k;
     }
-    /*
-    for(int i = 0; i < codes.size(); ++i){
-	for(int j = 0; j < codes[i].size(); ++j){
-	    //cout << k << " ";
-	    if(k < 10){
-		//cout << " ";
-	    }
-	    cout << codes[i][j] << endl;
-	    ++k;
-	}
-	cout << endl;
-    }
-    */
 
     {cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";}
     return v;
