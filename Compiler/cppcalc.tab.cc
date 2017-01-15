@@ -608,7 +608,7 @@ namespace yy {
 
   case 7:
 #line 125 "cppcalc.yy" // lalr1.cc:859
-    {if(debugger) cout << "reduce" << endl;	    (yylhs.value.ival) = (yystack_[0].value.ival);}
+    {if(debugger) cout << "reduce" << endl;	    }
 #line 613 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
@@ -626,7 +626,7 @@ namespace yy {
 
   case 10:
 #line 131 "cppcalc.yy" // lalr1.cc:859
-    {if(1) cout << "while" << (yystack_[1].value.ival) << endl;	    (yylhs.value.ival) = genWHILE((yystack_[3].value.condition), (yystack_[1].value.ival));}
+    {if(debugger) cout << "while" << endl;	    (yylhs.value.ival) = genWHILE((yystack_[3].value.condition), (yystack_[1].value.ival));}
 #line 631 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
@@ -666,74 +666,80 @@ namespace yy {
 #line 667 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
+  case 17:
+#line 141 "cppcalc.yy" // lalr1.cc:859
+    {genADD((yystack_[2].value.value), (yystack_[0].value.value));}
+#line 673 "cppcalc.tab.cc" // lalr1.cc:859
+    break;
+
   case 22:
 #line 149 "cppcalc.yy" // lalr1.cc:859
     {(yylhs.value.condition) = newCondition((yystack_[2].value.value), "EQ", (yystack_[0].value.value));}
-#line 673 "cppcalc.tab.cc" // lalr1.cc:859
+#line 679 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 23:
 #line 150 "cppcalc.yy" // lalr1.cc:859
     {(yylhs.value.condition) = newCondition((yystack_[2].value.value), "DI", (yystack_[0].value.value));}
-#line 679 "cppcalc.tab.cc" // lalr1.cc:859
+#line 685 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 24:
 #line 151 "cppcalc.yy" // lalr1.cc:859
     {(yylhs.value.condition) = newCondition((yystack_[2].value.value), "ST", (yystack_[0].value.value));}
-#line 685 "cppcalc.tab.cc" // lalr1.cc:859
+#line 691 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 25:
 #line 152 "cppcalc.yy" // lalr1.cc:859
     {(yylhs.value.condition) = newCondition((yystack_[2].value.value), "BT", (yystack_[0].value.value));}
-#line 691 "cppcalc.tab.cc" // lalr1.cc:859
+#line 697 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 26:
 #line 153 "cppcalc.yy" // lalr1.cc:859
     {(yylhs.value.condition) = newCondition((yystack_[2].value.value), "SE", (yystack_[0].value.value));}
-#line 697 "cppcalc.tab.cc" // lalr1.cc:859
+#line 703 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 27:
 #line 154 "cppcalc.yy" // lalr1.cc:859
     {(yylhs.value.condition) = newCondition((yystack_[2].value.value), "BE", (yystack_[0].value.value));}
-#line 703 "cppcalc.tab.cc" // lalr1.cc:859
+#line 709 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 28:
 #line 158 "cppcalc.yy" // lalr1.cc:859
     {(yylhs.value.value) = newValue((yystack_[0].value.ival));}
-#line 709 "cppcalc.tab.cc" // lalr1.cc:859
+#line 715 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 29:
 #line 159 "cppcalc.yy" // lalr1.cc:859
     {(yylhs.value.value) = newValue((yystack_[0].value.variable));}
-#line 715 "cppcalc.tab.cc" // lalr1.cc:859
+#line 721 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 30:
 #line 163 "cppcalc.yy" // lalr1.cc:859
-    {(yylhs.value.variable) = getVariable((yystack_[0].value.sval)); if((yylhs.value.variable) == nullptr) return 0;}
-#line 721 "cppcalc.tab.cc" // lalr1.cc:859
+    {(yylhs.value.variable) = getVariable((yystack_[0].value.sval)); if((yylhs.value.variable) == nullptr || (yylhs.value.variable)->isArray){cout << "error: is array\n"; return 0;}}
+#line 727 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 31:
 #line 164 "cppcalc.yy" // lalr1.cc:859
     {(yylhs.value.variable) = getArrayVariable((yystack_[3].value.sval), getVariableValue((yystack_[1].value.sval)));}
-#line 727 "cppcalc.tab.cc" // lalr1.cc:859
+#line 733 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 32:
 #line 165 "cppcalc.yy" // lalr1.cc:859
     {(yylhs.value.variable) = getArrayVariable((yystack_[3].value.sval), (yystack_[1].value.ival));}
-#line 733 "cppcalc.tab.cc" // lalr1.cc:859
+#line 739 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
 
-#line 737 "cppcalc.tab.cc" // lalr1.cc:859
+#line 743 "cppcalc.tab.cc" // lalr1.cc:859
             default:
               break;
             }
@@ -1132,50 +1138,61 @@ namespace yy {
 
 
 } // yy
-#line 1136 "cppcalc.tab.cc" // lalr1.cc:1167
+#line 1142 "cppcalc.tab.cc" // lalr1.cc:1167
 #line 168 "cppcalc.yy" // lalr1.cc:1168
 
 #include <cstring>
 #include <string.h>
 #include <vector>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 using namespace cln;
 //typedef basic_string<char> string;
 
 vector<var*> variablesContainer;
-vector<string> code;
+
 vector<vector<string>> codes;
 int registers [5] = {0,0,0,0,0};
 #include "variableOperations.h"
 
 int genASSIGN(var* variable){
-    vector<string> code = codes[codes.size()-1];
+    cout << "ass " << variable->name << endl;
+    variable->isInitialized = true;
+    vector<string> code;
+    for(int i = 0; i < codes[codes.size()-1].size(); ++i){
+	code.push_back(codes[codes.size()-1][i]);
+    }
     setRegister(0, variable->memoryLocation, code);
+    cout << "mid ass " << variable->name << endl;
+
     code.push_back("STORE 1");
-    codes[codes.size()-1] = code;
+    codes.push_back(code);
+    cout << "end ass " << variable->name << endl;
     return codes.size()-1;
 }
 
 int genWHILE(cond* condition, int pos){
 
     vector<string> code;
+
     string op = condition->op;
     val* v1 = condition->val1;
     val* v2 = condition->val2;
-    //cout << "gen while v1 " << v1->variable->value << endl;
-    //cout << "gen while v2 " << v2->variable->value << endl;
+    //cout << "gen while v1 " << endl;
+    //cout << "gen while v2 " << v2->value << endl;
     if(!op.compare("EQ")){
-	cout << "eq" << endl;
+	//cout << "eq" << endl;
     }
     else if (!op.compare("DI")) {
-	cout << "di" << endl;
+	//cout << "di" << endl;
     }
     else if (!op.compare("ST")) {
-	cout << "st" << endl;
+	//cout << "st" << endl;
     }
     else if (!op.compare("BT")) {
-	cout << "bt" << endl;
+	//cout << "bt" << endl;
 	if(v1->variable != nullptr){
 	    setRegister(0, v1->variable->memoryLocation, code);
 	    code.push_back("LOAD 1");
@@ -1199,10 +1216,10 @@ int genWHILE(cond* condition, int pos){
 	//printVec(code);
     }
     else if (!op.compare("SE")) {
-	cout << "se" << endl;
+	//cout << "se" << endl;
     }
     else if (!op.compare("BE")) {
-	cout << "be" << endl;
+	//cout << "be" << endl;
     }
 
     vector<string> result;
@@ -1211,10 +1228,12 @@ int genWHILE(cond* condition, int pos){
     result.insert( result.end(), codes[pos].begin(), codes[pos].end() );
     result.push_back("JUMP -" + to_string(codes[pos].size() + code.size()));
     codes.push_back(result);
+
     return codes.size()-1;
 }
 
 int genREAD(var* variable){
+    variable->isInitialized = true;
     vector<string> code;
     code.push_back("GET 1");
     setRegister(0, variable->memoryLocation, code);
@@ -1224,9 +1243,13 @@ int genREAD(var* variable){
 }
 
 int genWRITE(val* value){
+    cout << "wr" << endl;
     vector<string> code;
 
     if(value->variable != nullptr){
+	if(!value->variable->isInitialized){
+	    cout << "ERROR: variable '" << value->variable->name << "' not initialized" << endl;
+	}
 	setRegister(0, value->variable->memoryLocation, code);
 	code.push_back("LOAD 1");
 	code.push_back("PUT 1");
@@ -1244,6 +1267,9 @@ void genNoOP(val* value){
     vector<string> code;
 
     if(value->variable != nullptr){
+	if(!value->variable->isInitialized){
+	    cout << "ERROR: variable '" << value->variable->name << "' not initialized" << endl;
+	}
 	setRegister(0, value->variable->memoryLocation, code);
 	code.push_back("LOAD 1");
     }
@@ -1253,15 +1279,62 @@ void genNoOP(val* value){
     codes.push_back(code);
 }
 
-void genADD(int l, int r){}
+void genADD(val* l, val* r){
+    vector<string> code;
+
+    if(l->variable != nullptr){
+	setRegister(0, l->variable->memoryLocation, code);
+	code.push_back("LOAD 1");
+    }
+    else{
+	setRegister(1, l->value, code);
+    }
+
+    if(r->variable != nullptr){
+	setRegister(0, r->variable->memoryLocation, code);
+	code.push_back("ADD 1");
+    }
+    else{
+	setRegister(2, r->value, code);
+	setRegister(0, variablesContainer.size(), code);
+	code.push_back("STORE 2");
+	code.push_back("ADD 1");
+    }
+
+    codes.push_back(code);
+}
 
 void setRegister(int reg, int value, vector<string> &code){
+    cout << "sr" << endl;
+
     code.push_back("ZERO " + to_string(reg));
+    cout << "sr 2" << endl;
+    bool firstShift = true;
     registers[reg] = 0;
 
-    for(int i = 0; i < value; ++i){
-	 code.push_back("INC " + to_string(reg));
+    int i;
+    int bits[32];
+
+    for (i = 0; i < 32; ++i) {
+	bits[31-i] = value & (1 << i) ? 1 : 0;
     }
+    i = 0;
+    while(!bits[i]) ++i;
+    cout << "sr 3" << endl;
+    for (i; i < 32; ++i) {
+	if(bits[i]){
+	    if(!firstShift){
+		code.push_back("SHL " + to_string(reg));
+	    }
+	    firstShift = false;
+	    code.push_back("INC " + to_string(reg));
+	}
+	else{
+	    code.push_back("SHL " + to_string(reg));
+	}
+
+    }
+    cout << "end sr" << endl;
     registers[reg] = value;
 }
 
@@ -1281,25 +1354,36 @@ val* newValue(int number){
 }
 
 cond* newCondition(val* val1, string op, val* val2){
+    //cout << "nc" << endl;
+    if(val1->variable != nullptr && !val1->variable->isInitialized){
+	cout << "ERROR: variable '" << val1->variable->name << "' not initialized" << endl;
+    }
+    if(val2->variable != nullptr && !val2->variable->isInitialized){
+	cout << "ERROR: variable '" << val2->variable->name << "' not initialized" << endl;
+    }
+
     cond* condition = (cond*)malloc(sizeof(cond));
+
     condition->val1 = val1;
+//cout << "1" << endl;
     condition->op = op;
+//out << "2" << endl;
     condition->val2 = val2;
+//cout << "3" << endl;
     return condition;
 }
 
 int concatenateCodes(int v1, int v2){
-    cout << v1 << "  " << v2 << endl;
+    cout << "cc" << endl;
     vector<string> code;
     code.reserve(codes[v1].size() + codes[v2].size());
     code.insert( code.end(), codes[v1].begin(), codes[v1].end() );
     code.insert( code.end(), codes[v2].begin(), codes[v2].end() );
 
     codes.push_back(code);
+    cout << "cc - end" << endl;
     return codes.size()-1;
 }
-
-
 
 void endThisShit(){
     codes[codes.size()-1].push_back("HALT");
@@ -1319,15 +1403,18 @@ void printVec(int i){
     }
 }
 
+
 int main() {
-    //test();
-    bool counter = true;
+
+    bool counter = 0;
     cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n";
     yy::cppcalc parser;
     int v = parser.parse();
     int k = 0;
     int pos = codes.size()-1;
 
+    ofstream myfile;
+    myfile.open ("output.txt");
     vector<string> result = codes[pos];
 
     string delim = " ";
@@ -1348,14 +1435,15 @@ int main() {
 	    int offset = stoi(result[j].substr(result[j].find(delim), result[j].length()));
 	    result[j] = "JUMP " + to_string(k + offset);
 	}
-	cout << result[j] << endl;
+	//cout << result[j] << endl;
+	myfile << result[j] << endl;
 	++k;
     }
 
     {cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";}
+    myfile.close();
     return v;
 }
-
 
 namespace yy {
   void cppcalc::error(location const &loc, const std::string& s) {

@@ -42,7 +42,8 @@
 // //                    "%code requires" blocks.
 #line 7 "cppcalc.yy" // lalr1.cc:377
 
-#define debugger 0
+#define debugger 1
+#define YYDEBUG 1
 #include <cln/cln.h>
 #include <cln/number.h>
 #include <stdio.h>
@@ -54,7 +55,7 @@
 
 //#include "variable.h"
 using namespace std;
-using namespace cln;
+//using namespace cln;
 #include "variable.h"
 void declareVariable(char* name);
 void declareArray(char* name, int size);
@@ -74,8 +75,7 @@ int genREAD(var* variable);
 int genWRITE(val* value);
 
 void genNoOP(val* value);
-void genADD(int l, int r);
-
+void genADD(val* l, val* r);
 
 void setRegister(int reg, int value, vector<string> &code);
 
@@ -154,7 +154,7 @@ void endThisShit();
 
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 
 

@@ -1,5 +1,5 @@
 var* createVariable(){
-    var* variable = (var*) malloc(sizeof(var*));
+    var* variable = (var*) malloc(sizeof(var));
     variable->name = (char*) malloc(sizeof(char)*20);
     variable->isArray = false;
     variable->isInitialized = false;
@@ -29,10 +29,12 @@ void declareArray(char* name, int size){
     variable->isArray = true;
     variable->name = name;
     variable->value = size;
-
+    variable->memoryLocation = variablesContainer.size();
     variablesContainer.push_back(variable);
     for(int i = 0; i < size; ++i){
 	var* temp = createVariable();
+	temp->name = name;
+	temp->memoryLocation = variablesContainer.size();
 	variablesContainer.push_back(temp);
     }
 
@@ -43,6 +45,10 @@ void initializeVariable(char* name, int value){
 
     if(variable == nullptr){
 	cout << "error: variable " << name << " not declared" << endl;
+	return;
+    }
+    if(variable->isArray){
+	cout << "error: variable " << name << " is an array" << endl;
 	return;
     }
     variable->value = value;
@@ -71,6 +77,10 @@ int getVariableValue(char* name){
 	cout << "error: variable " << name << " not initialized" << endl;
 	return 0;
     }
+    if(variable->isArray){
+	cout << "error: variable " << name << " is an array" << endl;
+	return 0;
+    }
 
     return variable->value;
 }
@@ -81,14 +91,15 @@ int getArrayVariableValue(char* name, int position){
 	cout << "error: variable '" << name << "' not declared" << endl;
 	return 0;
     }
-    if(position >= array->value){
-	cout << "error: array '" << name << "': out of bound exception" << endl;
-	return 0;
-    }
     if(!array->isArray){
 	cout << "error: '" << name << "' is not an array" << endl;
 	return 0;
     }
+    if(position >= array->value){
+	cout << "error: array '" << name << "': out of bound exception" << endl;
+	return 0;
+    }
+
 
     int i = 0;
     for(var* variable : variablesContainer){
@@ -105,19 +116,21 @@ int getArrayVariableValue(char* name, int position){
 }
 
 var* getArrayVariable(char* name, int position){
+
     var* array = getVariable(name);
     if(array == nullptr){
 	cout << "error: variable '" << name << "' not declared" << endl;
-	return 0;
-    }
-    if(position >= array->value){
-	cout << "error: array '" << name << "': out of bound exception" << endl;
 	return 0;
     }
     if(!array->isArray){
 	cout << "error: '" << name << "' is not an array" << endl;
 	return 0;
     }
+    if(position >= array->value){
+	cout << "error: array '" << name << "': out of bound exception" << endl;
+	return 0;
+    }
+
 
     int i = 0;
     for(var* variable : variablesContainer){
@@ -126,7 +139,7 @@ var* getArrayVariable(char* name, int position){
 	}
 	i++;
     }
-
+    //cout<<"GAVP"<<name<<" "<<position<<" "<<variablesContainer[i+position+1]->memoryLocation<<endl;
     return variablesContainer[i+position+1];
 }
 
