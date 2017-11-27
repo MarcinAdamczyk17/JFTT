@@ -190,14 +190,13 @@ int concatenate_codes(int c1, int c2)
 int gen_commnad_assign(int idt, int expr)
 {
 	cout << __FUNCTION__ << endl;
-    vector<string> code = codeFragments[idt];     // code emplaces adress of identifier in register a
-    code.push_back("STORE 7");
-    code.insert(code.end(), codeFragments[expr].begin(), codeFragments[expr].end());     // code emplaces adress of variable_2 in register a
-    code.push_back("STOREI 7");
+    vector<string> code = codeFragments[idt];                                           // zapisujemy adres zmiennej w rej a
+    code.push_back("STORE 7");                                                          // zapisujemy go w rej 7
+    code.insert(code.end(), codeFragments[expr].begin(), codeFragments[expr].end());    // zapisujemy wartosc wyrazenia w rej a
+    code.push_back("STOREI 7");                                                         // zapisujemy ja pod zmienna
 
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
-
 }
 
 int gen_command_write(int v)
@@ -215,9 +214,9 @@ int gen_command_write(int v)
 int gen_expr_value(int v)
 {
     cout << __FUNCTION__ << endl;
-    vector<string> code = codeFragments[v];     // code emplaces adress of variable in register a
-    code.push_back("STORE 1");                  // register 8 has memory address of variable
-    code.push_back("LOADI 1");                  // register a has actual value od variable
+    vector<string> code = codeFragments[v];     // ustawiamy adres zmiennej w rejestrze a
+    code.push_back("STORE 1");                  // zapisujemy adres w rej 1
+    code.push_back("LOADI 1");                  // ladujemy wartosc spod rej 1 
     
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
@@ -226,12 +225,12 @@ int gen_expr_value(int v)
 int gen_expr_add(int v1, int v2)
 {
 	cout << __FUNCTION__ << endl;	
-    vector<string> code = codeFragments[v1];                                         // code emplaces adress of variable_1 in register a
-    code.push_back("STORE 1");                                                       // register 8 has memory address of variable_1
-    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // code emplaces adress of variable_2 in register a
-    code.push_back("STORE 2");                                                       // register 9 has memory address of variable_2
-    code.push_back("LOADI 1");                                                       // register a has actual value od variable_1
-    code.push_back("ADDI 2");                                                        // register a has sum of variable_1 and variable_2
+    vector<string> code = codeFragments[v1];                                         // ustawiamy adres zmiennej 1 w rej a
+    code.push_back("STORE 1");                                                       // zapisujemy go w rej 1
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // ustawiamy adres zmiennej 2 w rej a
+    code.push_back("STORE 2");                                                       // zapisujemy go w rej 2
+    code.push_back("LOADI 1");                                                       // ladujemy wartosc spod zmiennej 1
+    code.push_back("ADDI 2");                                                        // dodajemy do niej wartosc spod zmiennej 2
     
     codeFragments.push_back(code);
 
@@ -240,13 +239,13 @@ int gen_expr_add(int v1, int v2)
 
 int gen_expr_sub(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;   
-    vector<string> code = codeFragments[v1];                                         // code emplaces adress of variable_1 in register a
-    code.push_back("STORE 1");                                                       // register 8 has memory address of variable_1
-    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // code emplaces adress of variable_2 in register a
-    code.push_back("STORE 2");                                                       // register 9 has memory address of variable_2
-    code.push_back("LOADI 1");                                                       // register a has actual value od variable_1
-    code.push_back("SUBI 2");                                                        // register a has sum of variable_1 and variable_2
+	cout << __FUNCTION__ << endl;	
+    vector<string> code = codeFragments[v1];                                         // ustawiamy adres zmiennej 1 w rej a
+    code.push_back("STORE 1");                                                       // zapisujemy go w rej 1
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // ustawiamy adres zmiennej 2 w rej a
+    code.push_back("STORE 2");                                                       // zapisujemy go w rej 2
+    code.push_back("LOADI 1");                                                       // ladujemy wartosc spod zmiennej 1
+    code.push_back("SUBI 2");                                                        // odejmujemy od niej wartosc spod zmiennej 2
     
     codeFragments.push_back(code);
 
@@ -263,11 +262,11 @@ int gen_ConstNumber(int num)
     cout << __FUNCTION__ << endl;
     vector<string> code;
 
-    setRegister(code, memory_used++);
-    code.push_back("STORE 0");
-    setRegister(code, num);
-    code.push_back("STOREI 0");
-    code.push_back("LOAD 0");
+    setRegister(code, memory_used++);       // zapisujemy adres gdzie stala bedzie przechowywana
+    code.push_back("STORE 0");              // zapisujemy do rejestru 0
+    setRegister(code, num);                 // ustawiamy wartosc stalej w rejestrze a
+    code.push_back("STOREI 0");             // zapisujemy wartosc pod adres gdzie stala jest przechowywana
+    code.push_back("LOAD 0");               // wykonujemy to co tzeba - ustawiamy rejestr a na adres stalej w pamieci
     
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
@@ -356,6 +355,7 @@ int gen_ArrayPid(std::string* arrayName, std::string* positionPid)
     		cerr << "ERROR: variable \'" << *positionPid << "\' is array type" << endl;
     		exit(0);
     	}
+        // TEST ME
     	setRegister(code, variables[*arrayName]->memory_position);
     	code.push_back("ADD " + to_string(variables[*positionPid]->memory_position));
     }
