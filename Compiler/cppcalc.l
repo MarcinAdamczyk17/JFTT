@@ -1,22 +1,25 @@
 /* recognize tokens for the C++ calculator and print them out */
 %option noyywrap
 %{
-#include <stdlib.h>
-#include <cstring>
-#include <string.h>
-#include "cppcalc.tab.hh"
-#define YY_DECL int yylex(yy::cppcalc::semantic_type *yylval, yy::cppcalc::location_type *yylloc)
-// make location include the current token
-#define YY_USER_ACTION yylloc->columns (yyleng);
-#define debug 0
-typedef yy::cppcalc::token token;
+
+	#include <stdlib.h>
+	#include <cstring>
+	#include <string.h>
+	#include "cppcalc.tab.hh"
+
+	#define YY_DECL int yylex(yy::cppcalc::semantic_type *yylval, yy::cppcalc::location_type *yylloc)
+	#define YY_USER_ACTION yylloc->columns (yyleng);
+	
+	#define debug 0
+
+	typedef yy::cppcalc::token token;
 %}
 %x COMMENT
 %%
 
-"{"                     BEGIN(COMMENT);
-<COMMENT>"}"             BEGIN(INITIAL);
-<COMMENT>[^}]
+"("                     BEGIN(COMMENT);
+<COMMENT>")"            BEGIN(INITIAL);
+<COMMENT>[^)]
 
 
 "VAR"	    {if(debug) std::cout << yytext; return token::VAR;}
@@ -37,29 +40,29 @@ typedef yy::cppcalc::token token;
 "READ"	    {if(debug) std::cout << yytext; return token::READ;}
 "WRITE"	    {if(debug) std::cout << yytext; return token::WRITE;}
 "SKIP"	    {if(debug) std::cout << yytext; return token::SKIP;}
-";"	    {if(debug) std::cout << yytext; return token::SC;}
+";"	    	{if(debug) std::cout << yytext; return token::SC;}
 ":="	    {if(debug) std::cout << yytext; return token::ASSIGN;}
-"="	    {if(debug) std::cout << yytext; return token::EQUAL;}
+"="	    	{if(debug) std::cout << yytext; return token::EQUAL;}
 "<>"	    {if(debug) std::cout << yytext; return token::DIFFERENT;}
-"<"	    {if(debug) std::cout << yytext; return token::SMALLER_THAN;}
-">"	    {if(debug) std::cout << yytext; return token::BIGGER_THAN;}
+"<"	    	{if(debug) std::cout << yytext; return token::SMALLER_THAN;}
+">"	    	{if(debug) std::cout << yytext; return token::BIGGER_THAN;}
 "<="	    {if(debug) std::cout << yytext; return token::SMALLER_THAN_OR_EQUAL;}
 ">="	    {if(debug) std::cout << yytext; return token::BIGGER_THAN_OR_EQUAL;}
-""	    {if(debug) std::cout << yytext; return token::VAR;}
-"+"	    {if(debug) std::cout << yytext; return token::ADD;}
-"-"	    {if(debug) std::cout << yytext; return token::SUB;}
-"*"	    {if(debug) std::cout << yytext; return token::MULT;}
-"/"	    {if(debug) std::cout << yytext; return token::DIV;}
-"^"	    {if(debug) std::cout << yytext; return token::POW;}
-"["	    {if(debug) std::cout << yytext; return token::LEFT_BRACKET;}
-"]"	    {if(debug) std::cout << yytext; return token::RIGHT_BRACKET;}
-"%"	    {if(debug) std::cout << yytext; return token::MOD;}
+""	    	{if(debug) std::cout << yytext; return token::VAR;}
+"+"	    	{if(debug) std::cout << yytext; return token::ADD;}
+"-"	    	{if(debug) std::cout << yytext; return token::SUB;}
+"*"	    	{if(debug) std::cout << yytext; return token::MULT;}
+"/"	    	{if(debug) std::cout << yytext; return token::DIV;}
+"^"	    	{if(debug) std::cout << yytext; return token::POW;}
+"["	    	{if(debug) std::cout << yytext; return token::LEFT_BRACKET;}
+"]"	    	{if(debug) std::cout << yytext; return token::RIGHT_BRACKET;}
+"%"	    	{if(debug) std::cout << yytext; return token::MOD;}
 
-[_a-z]+	    {if(debug) std::cout << yytext; yylval->sval = strdup(yytext); return token::pidentifier;}
+[_a-z]+	    {if(debug) std::cout << yytext; yylval->sval = new std::string(yytext, yyleng); return token::pidentifier;}
 [0-9]+	    {if(debug) std::cout << yytext; yylval->ival = atoi(yytext); return token::num;}
 
-\n	    {if(debug) std::cout << yytext;}
+\n	    	{if(debug) std::cout << yytext;}
 [ \t]	    {if(debug) std::cout << yytext;}
-.	    {printf("unknown char %s", yytext); }
+.	    	{printf("unknown char %s", yytext); }
 
 %%

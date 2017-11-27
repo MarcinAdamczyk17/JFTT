@@ -42,52 +42,23 @@
 // //                    "%code requires" blocks.
 #line 7 "cppcalc.yy" // lalr1.cc:377
 
-#define debugger 1
-#define YYDEBUG 1
-#include <cln/cln.h>
-#include <cln/number.h>
-#include <stdio.h>
-#include <iostream>
-#include <cstring>
-#include <string>
-#include <string.h>
-#include <vector>
+    #define DBG 1
+    #define YYDEBUG 1
 
-//#include "variable.h"
-using namespace std;
-//using namespace cln;
-#include "variable.h"
-void declareVariable(char* name);
-void declareArray(char* name, int size);
-bool checkIfAlreadyDeclared(char* name);
-bool checkIfInitialized(char* name);
-void initializeVariable(char* name, int value);
-int getVariableValue(char* name);
-int getArrayValue(char* name, int position);
-var* getVariable(char* name);
-var* getArrayVariable(char* name, int position);
-int getArrayVariableValue(char* name, int position);
-void initializeArrayVariable(char* name, int position, int value);
+    #include <stdio.h>
+    #include <iostream>
+    #include <cstring>
+    #include <string>
+    #include <string.h>
+    #include <vector>
 
-int genASSIGN(var *variable);
-int genWHILE(cond *codition, int pos);
-int genREAD(var* variable);
-int genWRITE(val* value);
+    #include "functions.h"
+    #include "types.h"
 
-void genNoOP(val* value);
-void genADD(val* l, val* r);
+    using namespace std;
 
-void setRegister(int reg, int value, vector<string> &code);
 
-val* newValue(var* variable);
-val* newValue(int value);
-cond* newCondition(val* val1, string op, val* val2);
-
-void printVec(vector<string> &v);
-int concatenateCodes(int v1, int v2);
-void endThisShit();
-
-#line 91 "cppcalc.tab.hh" // lalr1.cc:377
+#line 62 "cppcalc.tab.hh" // lalr1.cc:377
 
 
 # include <cstdlib> // std::abort
@@ -159,7 +130,7 @@ void endThisShit();
 
 
 namespace yy {
-#line 163 "cppcalc.tab.hh" // lalr1.cc:377
+#line 134 "cppcalc.tab.hh" // lalr1.cc:377
 
 
 
@@ -173,15 +144,12 @@ namespace yy {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 54 "cppcalc.yy" // lalr1.cc:377
+    #line 25 "cppcalc.yy" // lalr1.cc:377
 
-  char* sval;
-  int ival;
-  var* variable;
-  val* value;
-  cond* condition;
+    string* sval;
+    int ival;
 
-#line 185 "cppcalc.tab.hh" // lalr1.cc:377
+#line 153 "cppcalc.tab.hh" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -556,7 +524,7 @@ namespace yy {
 
 
 } // yy
-#line 560 "cppcalc.tab.hh" // lalr1.cc:377
+#line 528 "cppcalc.tab.hh" // lalr1.cc:377
 
 
 

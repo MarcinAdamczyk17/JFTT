@@ -1,22 +1,7 @@
 VAR
-    a b[100]
+    a
 BEGIN
-
-    READ a;
-
-    READ b[50];
-    a := 3;
-    b[10] := 50;
-    WHILE a > 5 DO
-
-	b[99] := 120;
-	WRITE a;
-	b[99] := 120;
-	b[99] := 120;
-	b[99] := 120;
-    ENDWHILE
-
-    b[99] := 123456;
-    WRITE a;
-    WRITE b[99];
+    FOR c FROM 10 TO 20 DO
+        a := 111;
+    ENDFOR
 END
