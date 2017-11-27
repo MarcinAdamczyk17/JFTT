@@ -1,7 +1,7 @@
 VAR
-    a
+    a b
 BEGIN
-    FOR c FROM 10 TO 20 DO
-        a := 111;
-    ENDFOR
+    a := 20 + 30;
+    a := a - 15;
+    WRITE a;
 END

@@ -80,7 +80,7 @@
 
 
 program:
-    VAR vdeclarations START commands END                                  {if(DBG) cout << "program" << endl; endThisShit();}
+    VAR vdeclarations START commands END                                  {if(DBG) cout << "program" << endl; endThisShit($4);}
 ;
 
 vdeclarations:
@@ -90,26 +90,26 @@ vdeclarations:
 ;
 
 commands:
-    commands command                                                      {}
+    commands command                                                      {$$ = concatenate_codes($1, $2);}
 |   command                                                               {}
 ;
 
 command:
-    identifier ASSIGN expression SC                                       {if(DBG) cout << "assign" << endl; $$ = gen_Assign($1, $3);}
+    identifier ASSIGN expression SC                                       {if(DBG) cout << "assign" << endl; $$ = gen_commnad_assign($1, $3);}
 |   IF condition THEN commands ELSE commands ENDIF                        {if(DBG) cout << "if" << endl;}
 |   WHILE condition DO commands ENDWHILE                                  {if(DBG) cout << "while" << endl;}
 |   FOR pidentifier FROM value TO value DO commands ENDFOR                {if(DBG) cout << "for to" << endl;}
 |   FOR pidentifier FROM value DOWNTO value DO commands ENDFOR            {if(DBG) cout << "for downto" << endl;}
 |   READ identifier SC                                                    {if(DBG) cout << "read" << endl;}
-|   WRITE value SC                                                        {if(DBG) cout << "write" << endl;}
+|   WRITE value SC                                                        {if(DBG) cout << "write" << endl; $$ = gen_command_write($2);}
 |   SKIP SC                                                               {if(DBG) cout << "skip" << endl;}
 ;
 
 expression:
-    value                                                                 {if(DBG) cout << "value" << endl;}
-|   value ADD value                                                       {if(DBG) cout << "add" << endl; $$ = gen_Add($1, $3);}
-|   value SUB value                                                       {if(DBG) cout << "sub" << endl;}
-|   value MULT value                                                      {if(DBG) cout << "mult" << endl;}
+    value                                                                 {if(DBG) cout << "value" << endl; $$ = gen_expr_value($1);}
+|   value ADD value                                                       {if(DBG) cout << "add" << endl; $$ = gen_expr_add($1, $3);}
+|   value SUB value                                                       {if(DBG) cout << "sub" << endl; $$ = gen_expr_sub($1, $3);}
+|   value MULT value                                                      {if(DBG) cout << "mult" << endl; $$ = gen_expr_mult($1, $3);}
 |   value DIV value                                                       {if(DBG) cout << "div" << endl;}
 |   value MOD value                                                       {if(DBG) cout << "mod" << endl;}
 ;
@@ -152,25 +152,110 @@ int memory_used = 10;
 vector<vector<string>> codeFragments;
 std::map<string, std::shared_ptr<value_t>> variables;
 
-void endThisShit()
+void endThisShit(int codePtr)
 {
-    // cout << __FUNCTION__ << endl;
+    ofstream myfile;
+    myfile.open ("output.txt");
+
     // for(vector<string> code : codeFragments)
     // {
-    // 	for(string s : code){
-    // 		cout << s << endl;
-    // 	}
+    //     for(string s : code)
+    //     {
+    //         myfile << s << endl;
+    //     }
+    //     myfile << endl;
     // }
+
+    for(string code : codeFragments[codePtr])
+    {
+        myfile << code << endl;
+    }
+
+    myfile << "HALT" << endl;
+        
+    myfile.close();
+    
 }
 
-int gen_Assign(int v1, int v2)
+int concatenate_codes(int c1, int c2)
 {
-	cout << __FUNCTION__ << endl;	
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[c1];
+    code.insert(code.end(), codeFragments[c2].begin(), codeFragments[c2].end());
+    
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
 }
 
-int gen_Add(int v1, int v2)
+int gen_commnad_assign(int idt, int expr)
+{
+	cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[idt];     // code emplaces adress of identifier in register a
+    code.push_back("STORE 7");
+    code.insert(code.end(), codeFragments[expr].begin(), codeFragments[expr].end());     // code emplaces adress of variable_2 in register a
+    code.push_back("STOREI 7");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+
+}
+
+int gen_command_write(int v)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v];
+    code.push_back("STORE 8");
+    code.push_back("LOADI 8");
+    code.push_back("PUT");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_expr_value(int v)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v];     // code emplaces adress of variable in register a
+    code.push_back("STORE 1");                  // register 8 has memory address of variable
+    code.push_back("LOADI 1");                  // register a has actual value od variable
+    
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_expr_add(int v1, int v2)
 {
 	cout << __FUNCTION__ << endl;	
+    vector<string> code = codeFragments[v1];                                         // code emplaces adress of variable_1 in register a
+    code.push_back("STORE 1");                                                       // register 8 has memory address of variable_1
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // code emplaces adress of variable_2 in register a
+    code.push_back("STORE 2");                                                       // register 9 has memory address of variable_2
+    code.push_back("LOADI 1");                                                       // register a has actual value od variable_1
+    code.push_back("ADDI 2");                                                        // register a has sum of variable_1 and variable_2
+    
+    codeFragments.push_back(code);
+
+    return codeFragments.size() - 1;
+}
+
+int gen_expr_sub(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;   
+    vector<string> code = codeFragments[v1];                                         // code emplaces adress of variable_1 in register a
+    code.push_back("STORE 1");                                                       // register 8 has memory address of variable_1
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // code emplaces adress of variable_2 in register a
+    code.push_back("STORE 2");                                                       // register 9 has memory address of variable_2
+    code.push_back("LOADI 1");                                                       // register a has actual value od variable_1
+    code.push_back("SUBI 2");                                                        // register a has sum of variable_1 and variable_2
+    
+    codeFragments.push_back(code);
+
+    return codeFragments.size() - 1;
+}
+
+int gen_expr_mult(int v1, int v2)
+{
+    return 0;   
 }
 
 int gen_ConstNumber(int num)
@@ -178,14 +263,12 @@ int gen_ConstNumber(int num)
     cout << __FUNCTION__ << endl;
     vector<string> code;
 
+    setRegister(code, memory_used++);
+    code.push_back("STORE 0");
     setRegister(code, num);
+    code.push_back("STOREI 0");
+    code.push_back("LOAD 0");
     
-    if(CODE_DBG)
-    { 
-    	code.push_back("\n");
-    	printVector(code);
-	}
-
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
 }
@@ -209,11 +292,6 @@ int gen_Pidentifier(std::string* name)
 
     	setRegister(code, variables[*name]->memory_position);
     }
-    if(CODE_DBG)
-    { 
-    	code.push_back("\n");
-    	printVector(code);
-	}
 
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
@@ -245,11 +323,6 @@ int gen_ArrayConst(std::string* name, int position)
 
     	setRegister(code, variables[*name]->memory_position + position);
     }
-    if(CODE_DBG)
-    { 
-    	code.push_back("\n");
-    	printVector(code);
-	}
 
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
@@ -286,11 +359,6 @@ int gen_ArrayPid(std::string* arrayName, std::string* positionPid)
     	setRegister(code, variables[*arrayName]->memory_position);
     	code.push_back("ADD " + to_string(variables[*positionPid]->memory_position));
     }
-    if(CODE_DBG)
-    { 
-    	code.push_back("\n");
-    	printVector(code);
-	}
     
     codeFragments.push_back(code);
 	return codeFragments.size() - 1;
@@ -377,22 +445,7 @@ int main()
   	cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n";
   	yy::cppcalc parser;
   	int v = parser.parse();
-
-  	ofstream myfile;
-  	myfile.open ("output.txt");
-
-
     cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-
-    for(vector<string> code : codeFragments)
-    {
-        for(string s : code)
-        {
-            myfile << s << endl;
-        }
-    }
-        
-	myfile.close();
 
   	return v;
 }
