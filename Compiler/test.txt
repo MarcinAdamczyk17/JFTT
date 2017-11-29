@@ -1,7 +1,16 @@
 VAR
-    a b
+    a b c
 BEGIN
-    a := 20 + 30;
-    a := a - 15;
-    WRITE a;
+    a := 10;
+    b := 12;
+    c := 20;
+
+    IF a = 11 THEN
+        WRITE c;
+    ELSE
+        WRITE b;
+    ENDIF
+
+    WRITE 15;
+
 END

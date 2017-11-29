@@ -96,7 +96,7 @@ commands:
 
 command:
     identifier ASSIGN expression SC                                       {if(DBG) cout << "assign" << endl; $$ = gen_commnad_assign($1, $3);}
-|   IF condition THEN commands ELSE commands ENDIF                        {if(DBG) cout << "if" << endl;}
+|   IF condition THEN commands ELSE commands ENDIF                        {if(DBG) cout << "if" << endl; $$ = gen_command_if($2, $4, $6);}
 |   WHILE condition DO commands ENDWHILE                                  {if(DBG) cout << "while" << endl;}
 |   FOR pidentifier FROM value TO value DO commands ENDFOR                {if(DBG) cout << "for to" << endl;}
 |   FOR pidentifier FROM value DOWNTO value DO commands ENDFOR            {if(DBG) cout << "for downto" << endl;}
@@ -115,7 +115,7 @@ expression:
 ;
 
 condition:
-    value EQUAL value                                                     {if(DBG) cout << "eq" << endl;}
+    value EQUAL value                                                     {if(DBG) cout << "eq" << endl; $$ = gen_condition_equal($1, $3);}
 |   value DIFFERENT value                                                 {if(DBG) cout << "neq" << endl;}
 |   value SMALLER_THAN value                                              {if(DBG) cout << "st" << endl;}
 |   value BIGGER_THAN value                                               {if(DBG) cout << "bt" << endl;}
@@ -157,18 +157,11 @@ void endThisShit(int codePtr)
     ofstream myfile;
     myfile.open ("output.txt");
 
-    // for(vector<string> code : codeFragments)
-    // {
-    //     for(string s : code)
-    //     {
-    //         myfile << s << endl;
-    //     }
-    //     myfile << endl;
-    // }
+    finalizeJumps(codePtr);
 
-    for(string code : codeFragments[codePtr])
+    for(string instruction : codeFragments[codePtr])
     {
-        myfile << code << endl;
+        myfile << instruction << endl;
     }
 
     myfile << "HALT" << endl;
@@ -187,6 +180,7 @@ int concatenate_codes(int c1, int c2)
     return codeFragments.size() - 1;
 }
 
+
 int gen_commnad_assign(int idt, int expr)
 {
 	cout << __FUNCTION__ << endl;
@@ -199,10 +193,35 @@ int gen_commnad_assign(int idt, int expr)
     return codeFragments.size() - 1;
 }
 
+int gen_command_if(int cond, int cmds_1, int cmds_2)
+{
+    cout << __FUNCTION__ << endl;
+    
+    int commandsLength = codeFragments[cmds_1].size();
+    
+    vector<string> code = codeFragments[cond];
+
+    for(string& instruction : code)
+    {
+        if(instruction[0] == 'J' && instruction.find('x') != string::npos)
+        {
+            resolveJump(instruction, commandsLength);
+        }
+    }
+
+    code.insert(code.end(), codeFragments[cmds_1].begin(), codeFragments[cmds_1].end());
+    code.push_back("JUMP " + to_string(codeFragments[cmds_2].size()+1));
+    code.insert(code.end(), codeFragments[cmds_2].begin(), codeFragments[cmds_2].end());
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
 int gen_command_write(int v)
 {
     cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v];
+
     code.push_back("STORE 8");
     code.push_back("LOADI 8");
     code.push_back("PUT");
@@ -210,6 +229,129 @@ int gen_command_write(int v)
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
 }
+
+
+int gen_condition_equal(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v1];     
+    
+    code.push_back("STORE 6");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 7");
+    code.push_back("LOADI 6"); 
+    code.push_back("INC");
+    code.push_back("SUBI 7");
+    code.push_back("JZERO x+4");
+    code.push_back("DEC");
+    code.push_back("JZERO 2");
+    code.push_back("JUMP x+1");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_condition_notEqual(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v1];     
+    
+    code.push_back("STORE 6");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 7");
+    code.push_back("LOADI 6"); 
+    code.push_back("INC");
+    code.push_back("SUBI 7");
+    code.push_back("JZERO x+4");
+    code.push_back("DEC");
+    code.push_back("JZERO 2");
+    code.push_back("JUMP x+1");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_condition_smaller(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v1];     
+    
+    code.push_back("STORE 6");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 7");
+    code.push_back("LOADI 6"); 
+    code.push_back("INC");
+    code.push_back("SUBI 7");
+    code.push_back("JZERO x+4");
+    code.push_back("DEC");
+    code.push_back("JZERO 2");
+    code.push_back("JUMP x+1");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_condition_bigger(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v1];     
+    
+    code.push_back("STORE 6");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 7");
+    code.push_back("LOADI 6"); 
+    code.push_back("INC");
+    code.push_back("SUBI 7");
+    code.push_back("JZERO x+4");
+    code.push_back("DEC");
+    code.push_back("JZERO 2");
+    code.push_back("JUMP x+1");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_condition_smallerOrEqual(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v1];     
+    
+    code.push_back("STORE 6");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 7");
+    code.push_back("LOADI 6"); 
+    code.push_back("INC");
+    code.push_back("SUBI 7");
+    code.push_back("JZERO x+4");
+    code.push_back("DEC");
+    code.push_back("JZERO 2");
+    code.push_back("JUMP x+1");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_condition_biggerOrEqual(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v1];     
+    
+    code.push_back("STORE 6");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 7");
+    code.push_back("LOADI 6"); 
+    code.push_back("INC");
+    code.push_back("SUBI 7");
+    code.push_back("JZERO x+4");
+    code.push_back("DEC");
+    code.push_back("JZERO 2");
+    code.push_back("JUMP x+1");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+
 
 int gen_expr_value(int v)
 {
@@ -256,6 +398,7 @@ int gen_expr_mult(int v1, int v2)
 {
     return 0;   
 }
+
 
 int gen_ConstNumber(int num)
 {
@@ -437,6 +580,32 @@ void printVector(std::vector<string>& v)
 {
 	for(string s : v){
     	cout << s << endl;
+    }
+}
+
+void resolveJump(std::string& instruction, int cmdsLength)
+{
+    // set jump value
+    int xpos = instruction.find('x');
+    int shift = stoi(instruction.substr(xpos+1, instruction.size()));
+
+    cout << "resolve " << to_string(shift + cmdsLength+1) << endl;
+
+    instruction.replace(xpos, instruction.size(), to_string(shift + cmdsLength+1));
+}
+
+void finalizeJumps(int finalCode)
+{
+    int k = 0;
+    for(string& instruction : codeFragments[finalCode])
+    {
+        if(instruction[0] == 'J')
+        {
+            int pos = instruction.find(' ');
+            int shift = stoi(instruction.substr(pos+1, instruction.size()));
+            instruction.replace(pos+1, instruction.size(), to_string(shift + k));
+        }
+        k++;
     }
 }
 

@@ -620,7 +620,7 @@ namespace yy {
 
   case 9:
 #line 99 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "if" << endl;}
+    {if(DBG) cout << "if" << endl; (yylhs.value.ival) = gen_command_if((yystack_[5].value.ival), (yystack_[3].value.ival), (yystack_[1].value.ival));}
 #line 625 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
@@ -698,7 +698,7 @@ namespace yy {
 
   case 22:
 #line 118 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "eq" << endl;}
+    {if(DBG) cout << "eq" << endl; (yylhs.value.ival) = gen_condition_equal((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 703 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
@@ -1187,18 +1187,11 @@ void endThisShit(int codePtr)
     ofstream myfile;
     myfile.open ("output.txt");
 
-    // for(vector<string> code : codeFragments)
-    // {
-    //     for(string s : code)
-    //     {
-    //         myfile << s << endl;
-    //     }
-    //     myfile << endl;
-    // }
+    finalizeJumps(codePtr);
 
-    for(string code : codeFragments[codePtr])
+    for(string instruction : codeFragments[codePtr])
     {
-        myfile << code << endl;
+        myfile << instruction << endl;
     }
 
     myfile << "HALT" << endl;
@@ -1217,23 +1210,48 @@ int concatenate_codes(int c1, int c2)
     return codeFragments.size() - 1;
 }
 
+
 int gen_commnad_assign(int idt, int expr)
 {
 	cout << __FUNCTION__ << endl;
-    vector<string> code = codeFragments[idt];     // code emplaces adress of identifier in register a
-    code.push_back("STORE 7");
-    code.insert(code.end(), codeFragments[expr].begin(), codeFragments[expr].end());     // code emplaces adress of variable_2 in register a
-    code.push_back("STOREI 7");
+    vector<string> code = codeFragments[idt];                                           // zapisujemy adres zmiennej w rej a
+    code.push_back("STORE 7");                                                          // zapisujemy go w rej 7
+    code.insert(code.end(), codeFragments[expr].begin(), codeFragments[expr].end());    // zapisujemy wartosc wyrazenia w rej a
+    code.push_back("STOREI 7");                                                         // zapisujemy ja pod zmienna
 
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
+}
 
+int gen_command_if(int cond, int cmds_1, int cmds_2)
+{
+    cout << __FUNCTION__ << endl;
+    
+    int commandsLength = codeFragments[cmds_1].size();
+    
+    vector<string> code = codeFragments[cond];
+
+    for(string& instruction : code)
+    {
+        if(instruction[0] == 'J' && instruction.find('x') != string::npos)
+        {
+            resolveJump(instruction, commandsLength);
+        }
+    }
+
+    code.insert(code.end(), codeFragments[cmds_1].begin(), codeFragments[cmds_1].end());
+    code.push_back("JUMP " + to_string(codeFragments[cmds_2].size()+1));
+    code.insert(code.end(), codeFragments[cmds_2].begin(), codeFragments[cmds_2].end());
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
 }
 
 int gen_command_write(int v)
 {
     cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v];
+
     code.push_back("STORE 8");
     code.push_back("LOADI 8");
     code.push_back("PUT");
@@ -1242,12 +1260,34 @@ int gen_command_write(int v)
     return codeFragments.size() - 1;
 }
 
+
+int gen_condition_equal(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v1];     // ustawiamy adres zmiennej w rejestrze a
+    
+    code.push_back("STORE 6");                  // zapisujemy adres w rej 1
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 7");                  // ladujemy wartosc spod rej 1
+    code.push_back("LOADI 6"); 
+    code.push_back("INC");
+    code.push_back("SUBI 7");
+    code.push_back("JZERO x+4");
+    code.push_back("DEC");
+    code.push_back("JZERO 2");
+    code.push_back("JUMP x+1");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+
 int gen_expr_value(int v)
 {
     cout << __FUNCTION__ << endl;
-    vector<string> code = codeFragments[v];     // code emplaces adress of variable in register a
-    code.push_back("STORE 1");                  // register 8 has memory address of variable
-    code.push_back("LOADI 1");                  // register a has actual value od variable
+    vector<string> code = codeFragments[v];     // ustawiamy adres zmiennej w rejestrze a
+    code.push_back("STORE 1");                  // zapisujemy adres w rej 1
+    code.push_back("LOADI 1");                  // ladujemy wartosc spod rej 1 
     
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
@@ -1256,12 +1296,12 @@ int gen_expr_value(int v)
 int gen_expr_add(int v1, int v2)
 {
 	cout << __FUNCTION__ << endl;	
-    vector<string> code = codeFragments[v1];                                         // code emplaces adress of variable_1 in register a
-    code.push_back("STORE 1");                                                       // register 8 has memory address of variable_1
-    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // code emplaces adress of variable_2 in register a
-    code.push_back("STORE 2");                                                       // register 9 has memory address of variable_2
-    code.push_back("LOADI 1");                                                       // register a has actual value od variable_1
-    code.push_back("ADDI 2");                                                        // register a has sum of variable_1 and variable_2
+    vector<string> code = codeFragments[v1];                                         // ustawiamy adres zmiennej 1 w rej a
+    code.push_back("STORE 1");                                                       // zapisujemy go w rej 1
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // ustawiamy adres zmiennej 2 w rej a
+    code.push_back("STORE 2");                                                       // zapisujemy go w rej 2
+    code.push_back("LOADI 1");                                                       // ladujemy wartosc spod zmiennej 1
+    code.push_back("ADDI 2");                                                        // dodajemy do niej wartosc spod zmiennej 2
     
     codeFragments.push_back(code);
 
@@ -1270,13 +1310,13 @@ int gen_expr_add(int v1, int v2)
 
 int gen_expr_sub(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;   
-    vector<string> code = codeFragments[v1];                                         // code emplaces adress of variable_1 in register a
-    code.push_back("STORE 1");                                                       // register 8 has memory address of variable_1
-    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // code emplaces adress of variable_2 in register a
-    code.push_back("STORE 2");                                                       // register 9 has memory address of variable_2
-    code.push_back("LOADI 1");                                                       // register a has actual value od variable_1
-    code.push_back("SUBI 2");                                                        // register a has sum of variable_1 and variable_2
+	cout << __FUNCTION__ << endl;	
+    vector<string> code = codeFragments[v1];                                         // ustawiamy adres zmiennej 1 w rej a
+    code.push_back("STORE 1");                                                       // zapisujemy go w rej 1
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // ustawiamy adres zmiennej 2 w rej a
+    code.push_back("STORE 2");                                                       // zapisujemy go w rej 2
+    code.push_back("LOADI 1");                                                       // ladujemy wartosc spod zmiennej 1
+    code.push_back("SUBI 2");                                                        // odejmujemy od niej wartosc spod zmiennej 2
     
     codeFragments.push_back(code);
 
@@ -1293,11 +1333,11 @@ int gen_ConstNumber(int num)
     cout << __FUNCTION__ << endl;
     vector<string> code;
 
-    setRegister(code, memory_used++);
-    code.push_back("STORE 0");
-    setRegister(code, num);
-    code.push_back("STOREI 0");
-    code.push_back("LOAD 0");
+    setRegister(code, memory_used++);       // zapisujemy adres gdzie stala bedzie przechowywana
+    code.push_back("STORE 0");              // zapisujemy do rejestru 0
+    setRegister(code, num);                 // ustawiamy wartosc stalej w rejestrze a
+    code.push_back("STOREI 0");             // zapisujemy wartosc pod adres gdzie stala jest przechowywana
+    code.push_back("LOAD 0");               // wykonujemy to co tzeba - ustawiamy rejestr a na adres stalej w pamieci
     
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
@@ -1386,6 +1426,7 @@ int gen_ArrayPid(std::string* arrayName, std::string* positionPid)
     		cerr << "ERROR: variable \'" << *positionPid << "\' is array type" << endl;
     		exit(0);
     	}
+        // TEST ME
     	setRegister(code, variables[*arrayName]->memory_position);
     	code.push_back("ADD " + to_string(variables[*positionPid]->memory_position));
     }
@@ -1467,6 +1508,32 @@ void printVector(std::vector<string>& v)
 {
 	for(string s : v){
     	cout << s << endl;
+    }
+}
+
+void resolveJump(std::string& instruction, int cmdsLength)
+{
+    // set jump value
+    int xpos = instruction.find('x');
+    int shift = stoi(instruction.substr(xpos+1, instruction.size()));
+
+    cout << "resolve " << to_string(shift + cmdsLength+1) << endl;
+
+    instruction.replace(xpos, instruction.size(), to_string(shift + cmdsLength+1));
+}
+
+void finalizeJumps(int finalCode)
+{
+    int k = 0;
+    for(string& instruction : codeFragments[finalCode])
+    {
+        if(instruction[0] == 'J')
+        {
+            int pos = instruction.find(' ');
+            int shift = stoi(instruction.substr(pos+1, instruction.size()));
+            instruction.replace(pos+1, instruction.size(), to_string(shift + k));
+        }
+        k++;
     }
 }
 
