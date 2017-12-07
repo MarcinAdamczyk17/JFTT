@@ -96,8 +96,9 @@ commands:
 
 command:
     identifier ASSIGN expression SC                                       {if(DBG) cout << "assign" << endl; $$ = gen_commnad_assign($1, $3);}
-|   IF condition THEN commands ELSE commands ENDIF                        {if(DBG) cout << "if" << endl; $$ = gen_command_if($2, $4, $6);}
-|   WHILE condition DO commands ENDWHILE                                  {if(DBG) cout << "while" << endl;}
+|   IF condition THEN commands ELSE commands ENDIF                        {if(DBG) cout << "if" << endl; $$ = gen_command_ifelse($2, $4, $6);}
+|   IF condition THEN commands ENDIF                                      {if(DBG) cout << "if" << endl; $$ = gen_command_if($2, $4);}
+|   WHILE condition DO commands ENDWHILE                                  {if(DBG) cout << "while" << endl; $$ = gen_command_while($2, $4);}
 |   FOR pidentifier FROM value TO value DO commands ENDFOR                {if(DBG) cout << "for to" << endl;}
 |   FOR pidentifier FROM value DOWNTO value DO commands ENDFOR            {if(DBG) cout << "for downto" << endl;}
 |   READ identifier SC                                                    {if(DBG) cout << "read" << endl;}
@@ -110,17 +111,17 @@ expression:
 |   value ADD value                                                       {if(DBG) cout << "add" << endl; $$ = gen_expr_add($1, $3);}
 |   value SUB value                                                       {if(DBG) cout << "sub" << endl; $$ = gen_expr_sub($1, $3);}
 |   value MULT value                                                      {if(DBG) cout << "mult" << endl; $$ = gen_expr_mult($1, $3);}
-|   value DIV value                                                       {if(DBG) cout << "div" << endl;}
+|   value DIV value                                                       {if(DBG) cout << "div" << endl; $$ = gen_expr_div($1, $3);}
 |   value MOD value                                                       {if(DBG) cout << "mod" << endl;}
 ;
 
 condition:
     value EQUAL value                                                     {if(DBG) cout << "eq" << endl; $$ = gen_condition_equal($1, $3);}
-|   value DIFFERENT value                                                 {if(DBG) cout << "neq" << endl;}
-|   value SMALLER_THAN value                                              {if(DBG) cout << "st" << endl;}
-|   value BIGGER_THAN value                                               {if(DBG) cout << "bt" << endl;}
-|   value SMALLER_THAN_OR_EQUAL value                                     {if(DBG) cout << "set" << endl;}
-|   value BIGGER_THAN_OR_EQUAL value                                      {if(DBG) cout << "bet" << endl;}
+|   value DIFFERENT value                                                 {if(DBG) cout << "neq" << endl; $$ = gen_condition_notEqual($1, $3);}
+|   value SMALLER_THAN value                                              {if(DBG) cout << "st" << endl; $$ = gen_condition_smaller($1, $3);}
+|   value BIGGER_THAN value                                               {if(DBG) cout << "bt" << endl; $$ = gen_condition_bigger($1, $3);}
+|   value SMALLER_THAN_OR_EQUAL value                                     {if(DBG) cout << "set" << endl; $$ = gen_condition_smallerOrEqual($1, $3);}
+|   value BIGGER_THAN_OR_EQUAL value                                      {if(DBG) cout << "bet" << endl; $$ = gen_condition_biggerOrEqual($1, $3);}
 ;
 
 value:
@@ -193,7 +194,7 @@ int gen_commnad_assign(int idt, int expr)
     return codeFragments.size() - 1;
 }
 
-int gen_command_if(int cond, int cmds_1, int cmds_2)
+int gen_command_ifelse(int cond, int cmds_1, int cmds_2)
 {
     cout << __FUNCTION__ << endl;
     
@@ -205,7 +206,7 @@ int gen_command_if(int cond, int cmds_1, int cmds_2)
     {
         if(instruction[0] == 'J' && instruction.find('x') != string::npos)
         {
-            resolveJump(instruction, commandsLength);
+            resolveJump(instruction, commandsLength+1);
         }
     }
 
@@ -216,6 +217,52 @@ int gen_command_if(int cond, int cmds_1, int cmds_2)
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
 }
+
+int gen_command_if(int cond, int cmds)
+{
+    cout << __FUNCTION__ << endl;
+    
+    int commandsLength = codeFragments[cmds].size();
+    
+    vector<string> code = codeFragments[cond];
+
+    for(string& instruction : code)
+    {
+        if(instruction[0] == 'J' && instruction.find('x') != string::npos)
+        {
+            resolveJump(instruction, commandsLength);
+        }
+    }
+
+    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_command_while(int cond, int cmds)
+{
+    cout << __FUNCTION__ << endl;
+    
+    int commandsLength = codeFragments[cmds].size();
+    
+    vector<string> code = codeFragments[cond];
+
+    for(string& instruction : code)
+    {
+        if(instruction[0] == 'J' && instruction.find('x') != string::npos)
+        {
+            resolveJump(instruction, commandsLength+1);
+        }
+    }
+
+    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+    code.push_back("JUMP -" + to_string(codeFragments[cmds].size() + codeFragments[cond].size()));
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;    
+}
+
 
 int gen_command_write(int v)
 {
@@ -262,10 +309,9 @@ int gen_condition_notEqual(int v1, int v2)
     code.push_back("LOADI 6"); 
     code.push_back("INC");
     code.push_back("SUBI 7");
-    code.push_back("JZERO x+4");
+    code.push_back("JZERO 3");
     code.push_back("DEC");
-    code.push_back("JZERO 2");
-    code.push_back("JUMP x+1");
+    code.push_back("JZERO x+1");
 
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
@@ -279,13 +325,9 @@ int gen_condition_smaller(int v1, int v2)
     code.push_back("STORE 6");
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
     code.push_back("STORE 7");
-    code.push_back("LOADI 6"); 
-    code.push_back("INC");
-    code.push_back("SUBI 7");
-    code.push_back("JZERO x+4");
-    code.push_back("DEC");
-    code.push_back("JZERO 2");
-    code.push_back("JUMP x+1");
+    code.push_back("LOADI 7"); 
+    code.push_back("SUBI 6");
+    code.push_back("JZERO x+1");
 
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
@@ -300,12 +342,8 @@ int gen_condition_bigger(int v1, int v2)
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
     code.push_back("STORE 7");
     code.push_back("LOADI 6"); 
-    code.push_back("INC");
     code.push_back("SUBI 7");
-    code.push_back("JZERO x+4");
-    code.push_back("DEC");
-    code.push_back("JZERO 2");
-    code.push_back("JUMP x+1");
+    code.push_back("JZERO x+1");
 
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
@@ -320,10 +358,7 @@ int gen_condition_smallerOrEqual(int v1, int v2)
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
     code.push_back("STORE 7");
     code.push_back("LOADI 6"); 
-    code.push_back("INC");
     code.push_back("SUBI 7");
-    code.push_back("JZERO x+4");
-    code.push_back("DEC");
     code.push_back("JZERO 2");
     code.push_back("JUMP x+1");
 
@@ -339,11 +374,8 @@ int gen_condition_biggerOrEqual(int v1, int v2)
     code.push_back("STORE 6");
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
     code.push_back("STORE 7");
-    code.push_back("LOADI 6"); 
-    code.push_back("INC");
-    code.push_back("SUBI 7");
-    code.push_back("JZERO x+4");
-    code.push_back("DEC");
+    code.push_back("LOADI 7"); 
+    code.push_back("SUBI 6");
     code.push_back("JZERO 2");
     code.push_back("JUMP x+1");
 
@@ -396,8 +428,129 @@ int gen_expr_sub(int v1, int v2)
 
 int gen_expr_mult(int v1, int v2)
 {
-    return 0;   
+    cout << __FUNCTION__ << endl;
+
+    vector<string> code = codeFragments[v1];
+    code.push_back("STORE 2");
+    code.push_back("LOADI 2");
+    code.push_back("STORE 0");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 2");
+    code.push_back("LOADI 2");
+    code.push_back("STORE 1");
+
+    code.push_back("ZERO");
+    code.push_back("STORE 2");
+    code.push_back("STORE 3");
+    code.push_back("STORE 4");
+    code.push_back("STORE 5");
+
+    code.push_back("LOAD 1");
+    code.push_back("JZERO 24");
+    code.push_back("JODD 8");
+    code.push_back("SHR");
+    code.push_back("STORE 1");
+    code.push_back("LOAD 3");
+    code.push_back("INC");
+    code.push_back("STORE 3");
+    code.push_back("STORE 4");
+    code.push_back("JUMP -9");
+    code.push_back("LOAD 0");
+    code.push_back("STORE 5");
+    code.push_back("LOAD 4");
+    code.push_back("JZERO 7");
+    code.push_back("DEC");
+    code.push_back("STORE 4");
+    code.push_back("LOAD 5");
+    code.push_back("SHL");
+    code.push_back("STORE 5");
+    code.push_back("JUMP -7");
+    code.push_back("LOAD 5");
+    code.push_back("ADD 2");
+    code.push_back("STORE 2");
+    code.push_back("LOAD 1");
+    code.push_back("JUMP -21");
+    code.push_back("LOAD 2");
+    
+    codeFragments.push_back(code);
+
+    return codeFragments.size() - 1;
 }
+
+int gen_expr_div(int v1, int v2)
+{
+    vector<string> code = codeFragments[v2];
+    code.push_back("STORE 5");
+    code.push_back("LOADI 5");
+    code.push_back("STORE 1");
+    code.insert(code.end(), codeFragments[v1].begin(), codeFragments[v1].end());
+    code.push_back("STORE 5");
+    code.push_back("LOADI 5");
+    code.push_back("STORE 0");
+
+    // zapisz P pod mem[5], zacznij liczyć n
+    code.push_back("STORE 5");
+    code.push_back("ZERO");
+    code.push_back("STORE 3");
+    code.push_back("LOAD 5");
+    code.push_back("JZERO 10");
+        code.push_back("SHR");
+        code.push_back("STORE 5");
+        code.push_back("LOAD 1");
+        code.push_back("SHL");
+        code.push_back("STORE 1");
+        code.push_back("LOAD 3");
+        code.push_back("INC");
+        code.push_back("STORE 3");
+        code.push_back("JUMP -10");
+    code.push_back("LOAD 3");
+    code.push_back("DEC");
+    code.push_back("STORE 4");
+    // mem[3] = n, mem[4] = i = n-1
+
+    // petla for - poczatek
+    code.push_back("JZERO 27");
+        // --i
+        code.push_back("DEC");
+        code.push_back("STORE 4");
+
+        code.push_back("LOAD 0");
+        code.push_back("SHL");
+        code.push_back("STORE 5");
+        code.push_back("LOAD 1");
+        code.push_back("SUB 5");
+
+        // if D < 2P
+        code.push_back("JZERO 2");
+        code.push_back("JUMP 10");
+            code.push_back("LOAD 2");
+            code.push_back("INC");
+            code.push_back("SHL");
+            code.push_back("STORE 2");
+            code.push_back("LOAD 0");
+            code.push_back("SHL");
+            code.push_back("SUB 1");
+            code.push_back("STORE 0");
+            code.push_back("JUMP 7");
+        //else
+            code.push_back("LOAD 2");
+            code.push_back("SHL");
+            code.push_back("STORE 2");
+            code.push_back("LOAD 0");
+            code.push_back("SHL");
+            code.push_back("STORE 0");
+        
+        code.push_back("LOAD 4");
+
+    code.push_back("JUMP -26");
+
+    code.push_back("LOAD 2");
+    code.push_back("SHR");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
 
 
 int gen_ConstNumber(int num)
@@ -589,9 +742,9 @@ void resolveJump(std::string& instruction, int cmdsLength)
     int xpos = instruction.find('x');
     int shift = stoi(instruction.substr(xpos+1, instruction.size()));
 
-    cout << "resolve " << to_string(shift + cmdsLength+1) << endl;
+    cout << "resolve " << to_string(shift + cmdsLength) << endl;
 
-    instruction.replace(xpos, instruction.size(), to_string(shift + cmdsLength+1));
+    instruction.replace(xpos, instruction.size(), to_string(shift + cmdsLength));
 }
 
 void finalizeJumps(int finalCode)

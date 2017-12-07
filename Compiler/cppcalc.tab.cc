@@ -620,150 +620,156 @@ namespace yy {
 
   case 9:
 #line 99 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "if" << endl; (yylhs.value.ival) = gen_command_if((yystack_[5].value.ival), (yystack_[3].value.ival), (yystack_[1].value.ival));}
+    {if(DBG) cout << "if" << endl; (yylhs.value.ival) = gen_command_ifelse((yystack_[5].value.ival), (yystack_[3].value.ival), (yystack_[1].value.ival));}
 #line 625 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 10:
 #line 100 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "while" << endl;}
+    {if(DBG) cout << "if" << endl; (yylhs.value.ival) = gen_command_if((yystack_[3].value.ival), (yystack_[1].value.ival));}
 #line 631 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 11:
 #line 101 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "for to" << endl;}
+    {if(DBG) cout << "while" << endl; (yylhs.value.ival) = gen_command_while((yystack_[3].value.ival), (yystack_[1].value.ival));}
 #line 637 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 12:
 #line 102 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "for downto" << endl;}
+    {if(DBG) cout << "for to" << endl;}
 #line 643 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 13:
 #line 103 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "read" << endl;}
+    {if(DBG) cout << "for downto" << endl;}
 #line 649 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 14:
 #line 104 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "write" << endl; (yylhs.value.ival) = gen_command_write((yystack_[1].value.ival));}
+    {if(DBG) cout << "read" << endl;}
 #line 655 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 15:
 #line 105 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "skip" << endl;}
+    {if(DBG) cout << "write" << endl; (yylhs.value.ival) = gen_command_write((yystack_[1].value.ival));}
 #line 661 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 16:
-#line 109 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "value" << endl; (yylhs.value.ival) = gen_expr_value((yystack_[0].value.ival));}
+#line 106 "cppcalc.yy" // lalr1.cc:859
+    {if(DBG) cout << "skip" << endl;}
 #line 667 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 17:
 #line 110 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "add" << endl; (yylhs.value.ival) = gen_expr_add((yystack_[2].value.ival), (yystack_[0].value.ival));}
+    {if(DBG) cout << "value" << endl; (yylhs.value.ival) = gen_expr_value((yystack_[0].value.ival));}
 #line 673 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 18:
 #line 111 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "sub" << endl; (yylhs.value.ival) = gen_expr_sub((yystack_[2].value.ival), (yystack_[0].value.ival));}
+    {if(DBG) cout << "add" << endl; (yylhs.value.ival) = gen_expr_add((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 679 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 19:
 #line 112 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "mult" << endl; (yylhs.value.ival) = gen_expr_mult((yystack_[2].value.ival), (yystack_[0].value.ival));}
+    {if(DBG) cout << "sub" << endl; (yylhs.value.ival) = gen_expr_sub((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 685 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 20:
 #line 113 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "div" << endl;}
+    {if(DBG) cout << "mult" << endl; (yylhs.value.ival) = gen_expr_mult((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 691 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 21:
 #line 114 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "mod" << endl;}
+    {if(DBG) cout << "div" << endl; (yylhs.value.ival) = gen_expr_div((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 697 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 22:
-#line 118 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "eq" << endl; (yylhs.value.ival) = gen_condition_equal((yystack_[2].value.ival), (yystack_[0].value.ival));}
+#line 115 "cppcalc.yy" // lalr1.cc:859
+    {if(DBG) cout << "mod" << endl;}
 #line 703 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 23:
 #line 119 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "neq" << endl;}
+    {if(DBG) cout << "eq" << endl; (yylhs.value.ival) = gen_condition_equal((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 709 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 24:
 #line 120 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "st" << endl;}
+    {if(DBG) cout << "neq" << endl; (yylhs.value.ival) = gen_condition_notEqual((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 715 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 25:
 #line 121 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "bt" << endl;}
+    {if(DBG) cout << "st" << endl; (yylhs.value.ival) = gen_condition_smaller((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 721 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 26:
 #line 122 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "set" << endl;}
+    {if(DBG) cout << "bt" << endl; (yylhs.value.ival) = gen_condition_bigger((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 727 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 27:
 #line 123 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "bet" << endl;}
+    {if(DBG) cout << "set" << endl; (yylhs.value.ival) = gen_condition_smallerOrEqual((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 733 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 28:
-#line 127 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "num " << (yystack_[0].value.ival) << " "; (yylhs.value.ival) = gen_ConstNumber((yystack_[0].value.ival));}
+#line 124 "cppcalc.yy" // lalr1.cc:859
+    {if(DBG) cout << "bet" << endl; (yylhs.value.ival) = gen_condition_biggerOrEqual((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 739 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 29:
 #line 128 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "id" << endl;}
+    {if(DBG) cout << "num " << (yystack_[0].value.ival) << " "; (yylhs.value.ival) = gen_ConstNumber((yystack_[0].value.ival));}
 #line 745 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 30:
-#line 132 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "pid " << endl; (yylhs.value.ival) = gen_Pidentifier((yystack_[0].value.sval));}
+#line 129 "cppcalc.yy" // lalr1.cc:859
+    {if(DBG) cout << "id" << endl;}
 #line 751 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 31:
 #line 133 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "array pid " << endl; (yylhs.value.ival) = gen_ArrayPid((yystack_[3].value.sval), (yystack_[1].value.sval));}
+    {if(DBG) cout << "pid " << endl; (yylhs.value.ival) = gen_Pidentifier((yystack_[0].value.sval));}
 #line 757 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 32:
 #line 134 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "array num " << endl; (yylhs.value.ival) = gen_ArrayConst((yystack_[3].value.sval), (yystack_[1].value.ival));}
+    {if(DBG) cout << "array pid " << endl; (yylhs.value.ival) = gen_ArrayPid((yystack_[3].value.sval), (yystack_[1].value.sval));}
 #line 763 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
+  case 33:
+#line 135 "cppcalc.yy" // lalr1.cc:859
+    {if(DBG) cout << "array num " << endl; (yylhs.value.ival) = gen_ArrayConst((yystack_[3].value.sval), (yystack_[1].value.ival));}
+#line 769 "cppcalc.tab.cc" // lalr1.cc:859
+    break;
 
-#line 767 "cppcalc.tab.cc" // lalr1.cc:859
+
+#line 773 "cppcalc.tab.cc" // lalr1.cc:859
             default:
               break;
             }
@@ -936,29 +942,29 @@ namespace yy {
   const short int
   cppcalc::yypact_[] =
   {
-       5,   -36,     2,    -1,   -36,   156,   -35,   -17,   -17,   -19,
+       5,   -36,     2,    -1,   -36,   157,   -35,   -17,   -17,   -19,
      -14,   -17,    10,    -7,     1,   -36,     0,    -4,   -36,    26,
       13,   -36,    33,    31,    25,    36,   -36,   -12,   -36,   -36,
-     -17,    21,   156,   -17,   -17,   -17,   -17,   -17,   -17,   156,
-     -17,   -36,   -36,    27,    28,    43,   146,   -36,    81,   -36,
-     -36,   -36,   -36,   -36,   -36,    96,     9,   -36,   -36,   -36,
-     -17,   -17,   -17,   -17,   -17,   156,   -36,   -17,   -17,   -36,
-     -36,   -36,   -36,   -36,   111,    59,    60,   -36,   156,   156,
-     126,   141,   -36,   -36
+     -17,    21,   157,   -17,   -17,   -17,   -17,   -17,   -17,   157,
+     -17,   -36,   -36,    23,    27,    45,   147,   -36,    82,   -36,
+     -36,   -36,   -36,   -36,   -36,    97,     9,   -36,   -36,   -36,
+     -17,   -17,   -17,   -17,   -17,   157,   -36,   -36,   -17,   -17,
+     -36,   -36,   -36,   -36,   -36,   112,    56,    60,   -36,   157,
+     157,   127,   142,   -36,   -36
   };
 
   const unsigned char
   cppcalc::yydefact_[] =
   {
        0,     5,     0,     0,     1,     0,     3,     0,     0,     0,
-       0,     0,     0,    30,     0,     7,     0,     0,    28,     0,
-       0,    29,     0,     0,     0,     0,    15,     0,     2,     6,
+       0,     0,     0,    31,     0,     7,     0,     0,    29,     0,
+       0,    30,     0,     0,     0,     0,    16,     0,     2,     6,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,    13,    14,     0,     0,     0,    16,     4,     0,    22,
-      23,    24,    25,    26,    27,     0,     0,    31,    32,     8,
-       0,     0,     0,     0,     0,     0,    10,     0,     0,    18,
-      17,    19,    20,    21,     0,     0,     0,     9,     0,     0,
-       0,     0,    11,    12
+       0,    14,    15,     0,     0,     0,    17,     4,     0,    23,
+      24,    25,    26,    27,    28,     0,     0,    32,    33,     8,
+       0,     0,     0,     0,     0,     0,    10,    11,     0,     0,
+      19,    18,    20,    21,    22,     0,     0,     0,     9,     0,
+       0,     0,     0,    12,    13
   };
 
   const signed char
@@ -978,23 +984,23 @@ namespace yy {
   {
       16,    29,     4,     5,    17,    24,    28,     7,     1,    16,
       23,     8,    13,    18,     9,    13,    48,    43,    44,    10,
-      11,    12,    30,    55,    67,    68,    31,    16,     6,    25,
+      11,    12,    30,    55,    68,    69,    31,    16,     6,    25,
       13,    26,    27,    32,    16,    29,    33,    34,    35,    36,
-      37,    38,    29,    16,    39,    40,    41,    22,    46,    74,
+      37,    38,    29,    16,    39,    40,    41,    22,    46,    75,
       16,    49,    50,    51,    52,    53,    54,    42,    56,    47,
-      16,    29,    80,    81,    59,    57,    58,    29,    29,    16,
-      78,    79,     0,    16,    16,    16,    16,     0,    69,    70,
-      71,    72,    73,     0,     0,    75,    76,     7,     0,    65,
-       0,     8,     0,     0,     9,     0,     0,     0,     0,    10,
-      11,    12,     7,     0,     0,     0,     8,     0,    66,     9,
-      13,     0,     0,     0,    10,    11,    12,     7,     0,     0,
-      77,     8,     0,     0,     9,    13,     0,     0,     0,    10,
-      11,    12,     7,     0,     0,     0,     8,     0,     0,     9,
-      13,     0,     0,    82,    10,    11,    12,     7,     0,     0,
-       0,     8,     0,     0,     9,    13,     0,     0,    83,    10,
-      11,    12,     7,     0,     0,     0,     8,     0,     0,     9,
-      13,     0,     0,     0,    10,    11,    12,    60,    61,    62,
-      63,    64,     0,     0,     0,    13
+      16,    57,    29,    81,    82,    58,    59,    79,    29,    29,
+      16,    80,     0,     0,    16,    16,    16,    16,    70,    71,
+      72,    73,    74,     0,     0,     0,    76,    77,     7,     0,
+      65,    66,     8,     0,     0,     9,     0,     0,     0,     0,
+      10,    11,    12,     7,     0,     0,     0,     8,     0,    67,
+       9,    13,     0,     0,     0,    10,    11,    12,     7,     0,
+       0,    78,     8,     0,     0,     9,    13,     0,     0,     0,
+      10,    11,    12,     7,     0,     0,     0,     8,     0,     0,
+       9,    13,     0,     0,    83,    10,    11,    12,     7,     0,
+       0,     0,     8,     0,     0,     9,    13,     0,     0,    84,
+      10,    11,    12,     7,     0,     0,     0,     8,     0,     0,
+       9,    13,     0,     0,     0,    10,    11,    12,    60,    61,
+      62,    63,    64,     0,     0,     0,    13
   };
 
   const signed char
@@ -1006,19 +1012,19 @@ namespace yy {
       29,    21,    39,     7,    39,    48,    23,    24,    25,    26,
       27,    28,    55,    48,    11,    14,    21,     8,    30,    65,
       55,    33,    34,    35,    36,    37,    38,    21,    40,    38,
-      65,    74,    78,    79,    21,    38,    38,    80,    81,    74,
-      11,    11,    -1,    78,    79,    80,    81,    -1,    60,    61,
-      62,    63,    64,    -1,    -1,    67,    68,     6,    -1,     8,
-      -1,    10,    -1,    -1,    13,    -1,    -1,    -1,    -1,    18,
-      19,    20,     6,    -1,    -1,    -1,    10,    -1,    12,    13,
-      29,    -1,    -1,    -1,    18,    19,    20,     6,    -1,    -1,
-       9,    10,    -1,    -1,    13,    29,    -1,    -1,    -1,    18,
-      19,    20,     6,    -1,    -1,    -1,    10,    -1,    -1,    13,
-      29,    -1,    -1,    17,    18,    19,    20,     6,    -1,    -1,
-      -1,    10,    -1,    -1,    13,    29,    -1,    -1,    17,    18,
-      19,    20,     6,    -1,    -1,    -1,    10,    -1,    -1,    13,
-      29,    -1,    -1,    -1,    18,    19,    20,    31,    32,    33,
-      34,    35,    -1,    -1,    -1,    29
+      65,    38,    75,    79,    80,    38,    21,    11,    81,    82,
+      75,    11,    -1,    -1,    79,    80,    81,    82,    60,    61,
+      62,    63,    64,    -1,    -1,    -1,    68,    69,     6,    -1,
+       8,     9,    10,    -1,    -1,    13,    -1,    -1,    -1,    -1,
+      18,    19,    20,     6,    -1,    -1,    -1,    10,    -1,    12,
+      13,    29,    -1,    -1,    -1,    18,    19,    20,     6,    -1,
+      -1,     9,    10,    -1,    -1,    13,    29,    -1,    -1,    -1,
+      18,    19,    20,     6,    -1,    -1,    -1,    10,    -1,    -1,
+      13,    29,    -1,    -1,    17,    18,    19,    20,     6,    -1,
+      -1,    -1,    10,    -1,    -1,    13,    29,    -1,    -1,    17,
+      18,    19,    20,     6,    -1,    -1,    -1,    10,    -1,    -1,
+      13,    29,    -1,    -1,    -1,    18,    19,    20,    31,    32,
+      33,    34,    35,    -1,    -1,    -1,    29
   };
 
   const unsigned char
@@ -1030,27 +1036,27 @@ namespace yy {
       22,    30,     7,    23,    24,    25,    26,    27,    28,    11,
       14,    21,    21,    29,    30,    45,    47,    38,    43,    47,
       47,    47,    47,    47,    47,    43,    47,    38,    38,    21,
-      31,    32,    33,    34,    35,     8,    12,    15,    16,    47,
-      47,    47,    47,    47,    43,    47,    47,     9,    11,    11,
-      43,    43,    17,    17
+      31,    32,    33,    34,    35,     8,     9,    12,    15,    16,
+      47,    47,    47,    47,    47,    43,    47,    47,     9,    11,
+      11,    43,    43,    17,    17
   };
 
   const unsigned char
   cppcalc::yyr1_[] =
   {
        0,    40,    41,    42,    42,    42,    43,    43,    44,    44,
-      44,    44,    44,    44,    44,    44,    45,    45,    45,    45,
-      45,    45,    46,    46,    46,    46,    46,    46,    47,    47,
-      48,    48,    48
+      44,    44,    44,    44,    44,    44,    44,    45,    45,    45,
+      45,    45,    45,    46,    46,    46,    46,    46,    46,    47,
+      47,    48,    48,    48
   };
 
   const unsigned char
   cppcalc::yyr2_[] =
   {
        0,     2,     5,     2,     5,     0,     2,     1,     4,     7,
-       5,     9,     9,     3,     3,     2,     1,     3,     3,     3,
-       3,     3,     3,     3,     3,     3,     3,     3,     1,     1,
-       1,     4,     4
+       5,     5,     9,     9,     3,     3,     2,     1,     3,     3,
+       3,     3,     3,     3,     3,     3,     3,     3,     3,     1,
+       1,     1,     4,     4
   };
 
 
@@ -1075,9 +1081,9 @@ namespace yy {
   cppcalc::yyrline_[] =
   {
        0,    83,    83,    87,    88,    89,    93,    94,    98,    99,
-     100,   101,   102,   103,   104,   105,   109,   110,   111,   112,
-     113,   114,   118,   119,   120,   121,   122,   123,   127,   128,
-     132,   133,   134
+     100,   101,   102,   103,   104,   105,   106,   110,   111,   112,
+     113,   114,   115,   119,   120,   121,   122,   123,   124,   128,
+     129,   133,   134,   135
   };
 
   // Print the state stack on the debug stream.
@@ -1162,8 +1168,8 @@ namespace yy {
 
 
 } // yy
-#line 1166 "cppcalc.tab.cc" // lalr1.cc:1167
-#line 137 "cppcalc.yy" // lalr1.cc:1168
+#line 1172 "cppcalc.tab.cc" // lalr1.cc:1167
+#line 138 "cppcalc.yy" // lalr1.cc:1168
 
 
 #include <fstream>
@@ -1223,7 +1229,7 @@ int gen_commnad_assign(int idt, int expr)
     return codeFragments.size() - 1;
 }
 
-int gen_command_if(int cond, int cmds_1, int cmds_2)
+int gen_command_ifelse(int cond, int cmds_1, int cmds_2)
 {
     cout << __FUNCTION__ << endl;
     
@@ -1235,7 +1241,7 @@ int gen_command_if(int cond, int cmds_1, int cmds_2)
     {
         if(instruction[0] == 'J' && instruction.find('x') != string::npos)
         {
-            resolveJump(instruction, commandsLength);
+            resolveJump(instruction, commandsLength+1);
         }
     }
 
@@ -1246,6 +1252,52 @@ int gen_command_if(int cond, int cmds_1, int cmds_2)
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
 }
+
+int gen_command_if(int cond, int cmds)
+{
+    cout << __FUNCTION__ << endl;
+    
+    int commandsLength = codeFragments[cmds].size();
+    
+    vector<string> code = codeFragments[cond];
+
+    for(string& instruction : code)
+    {
+        if(instruction[0] == 'J' && instruction.find('x') != string::npos)
+        {
+            resolveJump(instruction, commandsLength);
+        }
+    }
+
+    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_command_while(int cond, int cmds)
+{
+    cout << __FUNCTION__ << endl;
+    
+    int commandsLength = codeFragments[cmds].size();
+    
+    vector<string> code = codeFragments[cond];
+
+    for(string& instruction : code)
+    {
+        if(instruction[0] == 'J' && instruction.find('x') != string::npos)
+        {
+            resolveJump(instruction, commandsLength+1);
+        }
+    }
+
+    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+    code.push_back("JUMP -" + to_string(codeFragments[cmds].size() + codeFragments[cond].size()));
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;    
+}
+
 
 int gen_command_write(int v)
 {
@@ -1264,11 +1316,11 @@ int gen_command_write(int v)
 int gen_condition_equal(int v1, int v2)
 {
     cout << __FUNCTION__ << endl;
-    vector<string> code = codeFragments[v1];     // ustawiamy adres zmiennej w rejestrze a
+    vector<string> code = codeFragments[v1];     
     
-    code.push_back("STORE 6");                  // zapisujemy adres w rej 1
+    code.push_back("STORE 6");
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
-    code.push_back("STORE 7");                  // ladujemy wartosc spod rej 1
+    code.push_back("STORE 7");
     code.push_back("LOADI 6"); 
     code.push_back("INC");
     code.push_back("SUBI 7");
@@ -1280,6 +1332,92 @@ int gen_condition_equal(int v1, int v2)
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
 }
+
+int gen_condition_notEqual(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v1];     
+    
+    code.push_back("STORE 6");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 7");
+    code.push_back("LOADI 6"); 
+    code.push_back("INC");
+    code.push_back("SUBI 7");
+    code.push_back("JZERO 3");
+    code.push_back("DEC");
+    code.push_back("JZERO x+1");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_condition_smaller(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v1];     
+    
+    code.push_back("STORE 6");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 7");
+    code.push_back("LOADI 7"); 
+    code.push_back("SUBI 6");
+    code.push_back("JZERO x+1");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_condition_bigger(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v1];     
+    
+    code.push_back("STORE 6");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 7");
+    code.push_back("LOADI 6"); 
+    code.push_back("SUBI 7");
+    code.push_back("JZERO x+1");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_condition_smallerOrEqual(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v1];     
+    
+    code.push_back("STORE 6");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 7");
+    code.push_back("LOADI 6"); 
+    code.push_back("SUBI 7");
+    code.push_back("JZERO 2");
+    code.push_back("JUMP x+1");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+int gen_condition_biggerOrEqual(int v1, int v2)
+{
+    cout << __FUNCTION__ << endl;
+    vector<string> code = codeFragments[v1];     
+    
+    code.push_back("STORE 6");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 7");
+    code.push_back("LOADI 7"); 
+    code.push_back("SUBI 6");
+    code.push_back("JZERO 2");
+    code.push_back("JUMP x+1");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
 
 
 int gen_expr_value(int v)
@@ -1325,8 +1463,130 @@ int gen_expr_sub(int v1, int v2)
 
 int gen_expr_mult(int v1, int v2)
 {
-    return 0;   
+    cout << __FUNCTION__ << endl;
+
+    vector<string> code = codeFragments[v1];
+    code.push_back("STORE 2");
+    code.push_back("LOADI 2");
+    code.push_back("STORE 0");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 2");
+    code.push_back("LOADI 2");
+    code.push_back("STORE 1");
+
+    code.push_back("ZERO");
+    code.push_back("STORE 2");
+    code.push_back("STORE 3");
+    code.push_back("STORE 4");
+    code.push_back("STORE 5");
+
+    code.push_back("LOAD 1");
+    code.push_back("JZERO 24");
+    code.push_back("JODD 8");
+    code.push_back("SHR");
+    code.push_back("STORE 1");
+    code.push_back("LOAD 3");
+    code.push_back("INC");
+    code.push_back("STORE 3");
+    code.push_back("STORE 4");
+    code.push_back("JUMP -9");
+    code.push_back("LOAD 0");
+    code.push_back("STORE 5");
+    code.push_back("LOAD 4");
+    code.push_back("JZERO 7");
+    code.push_back("DEC");
+    code.push_back("STORE 4");
+    code.push_back("LOAD 5");
+    code.push_back("SHL");
+    code.push_back("STORE 5");
+    code.push_back("JUMP -7");
+    code.push_back("LOAD 5");
+    code.push_back("ADD 2");
+    code.push_back("STORE 2");
+    code.push_back("LOAD 1");
+    code.push_back("JUMP -21");
+    code.push_back("LOAD 2");
+    
+    codeFragments.push_back(code);
+
+    return codeFragments.size() - 1;
 }
+
+int gen_expr_div(int v1, int v2)
+{
+    vector<string> code = codeFragments[v2];
+    code.push_back("STORE 5");
+    code.push_back("LOADI 5");
+    code.push_back("STORE 1");
+    code.insert(code.end(), codeFragments[v1].begin(), codeFragments[v1].end());
+    code.push_back("STORE 5");
+    code.push_back("LOADI 5");
+    code.push_back("STORE 0");
+
+    // zapisz P pod mem[5], zacznij liczyć n
+    code.push_back("STORE 5");
+    code.push_back("ZERO");
+    code.push_back("STORE 3");
+    code.push_back("LOAD 5");
+    code.push_back("JZERO 10");
+        code.push_back("SHR");
+        code.push_back("STORE 5");
+        code.push_back("LOAD 1");
+        code.push_back("SHL");
+        code.push_back("STORE 1");
+        code.push_back("LOAD 3");
+        code.push_back("INC");
+        code.push_back("STORE 3");
+        code.push_back("JUMP -10");
+    code.push_back("LOAD 3");
+    code.push_back("DEC");
+    code.push_back("STORE 4");
+    // mem[3] = n, mem[4] = i = n-1
+
+    // petla for - poczatek
+    code.push_back("JZERO 27");
+        // --i
+        code.push_back("DEC");
+        code.push_back("STORE 4");
+
+        code.push_back("LOAD 0");
+        code.push_back("SHL");
+        code.push_back("STORE 5");
+        code.push_back("LOAD 1");
+        code.push_back("SUB 5");
+
+        // if D < 2P
+        code.push_back("JZERO 2");
+        code.push_back("JUMP 10");
+            code.push_back("LOAD 2");
+            code.push_back("INC");
+            code.push_back("SHL");
+            code.push_back("STORE 2");
+            code.push_back("LOAD 0");
+            code.push_back("SHL");
+            code.push_back("SUB 1");
+            code.push_back("STORE 0");
+            code.push_back("JUMP 7");
+        //else
+            code.push_back("LOAD 2");
+            code.push_back("SHL");
+            code.push_back("STORE 2");
+            code.push_back("LOAD 0");
+            code.push_back("SHL");
+            code.push_back("STORE 0");
+        
+        code.push_back("LOAD 4");
+
+    code.push_back("JUMP -26");
+
+    code.push_back("LOAD 2");
+    //code.push_back("SHR");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
+
+
 
 int gen_ConstNumber(int num)
 {
@@ -1517,9 +1777,9 @@ void resolveJump(std::string& instruction, int cmdsLength)
     int xpos = instruction.find('x');
     int shift = stoi(instruction.substr(xpos+1, instruction.size()));
 
-    cout << "resolve " << to_string(shift + cmdsLength+1) << endl;
+    cout << "resolve " << to_string(shift + cmdsLength) << endl;
 
-    instruction.replace(xpos, instruction.size(), to_string(shift + cmdsLength+1));
+    instruction.replace(xpos, instruction.size(), to_string(shift + cmdsLength));
 }
 
 void finalizeJumps(int finalCode)
