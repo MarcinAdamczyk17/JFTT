@@ -112,7 +112,7 @@ expression:
 |   value SUB value                                                       {if(DBG) cout << "sub" << endl; $$ = gen_expr_sub($1, $3);}
 |   value MULT value                                                      {if(DBG) cout << "mult" << endl; $$ = gen_expr_mult($1, $3);}
 |   value DIV value                                                       {if(DBG) cout << "div" << endl; $$ = gen_expr_div($1, $3);}
-|   value MOD value                                                       {if(DBG) cout << "mod" << endl;}
+|   value MOD value                                                       {if(DBG) cout << "mod" << endl; $$ = gen_expr_mod($1, $3);}
 ;
 
 condition:
@@ -504,7 +504,6 @@ int gen_expr_div(int v1, int v2)
         code.push_back("STORE 3");
         code.push_back("JUMP -10");
     code.push_back("LOAD 3");
-    code.push_back("DEC");
     code.push_back("STORE 4");
     // mem[3] = n, mem[4] = i = n-1
 
@@ -545,12 +544,94 @@ int gen_expr_div(int v1, int v2)
     code.push_back("JUMP -26");
 
     code.push_back("LOAD 2");
+
     code.push_back("SHR");
 
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
 }
 
+int gen_expr_mod(int v1, int v2)
+{
+    vector<string> code = codeFragments[v2];
+    code.push_back("STORE 5");
+    code.push_back("LOADI 5");
+    code.push_back("STORE 1");
+    code.insert(code.end(), codeFragments[v1].begin(), codeFragments[v1].end());
+    code.push_back("STORE 5");
+    code.push_back("LOADI 5");
+    code.push_back("STORE 0");
+
+    // zapisz P pod mem[5], zacznij liczyć n
+    code.push_back("STORE 5");
+    code.push_back("ZERO");
+    code.push_back("STORE 3");
+    code.push_back("LOAD 5");
+    code.push_back("JZERO 10");
+        code.push_back("SHR");
+        code.push_back("STORE 5");
+        code.push_back("LOAD 1");
+        code.push_back("SHL");
+        code.push_back("STORE 1");
+        code.push_back("LOAD 3");
+        code.push_back("INC");
+        code.push_back("STORE 3");
+        code.push_back("JUMP -10");
+    code.push_back("LOAD 3");
+    code.push_back("STORE 4");
+    // mem[3] = n, mem[4] = i = n-1
+
+    // petla for - poczatek
+    code.push_back("JZERO 27");
+        // --i
+        code.push_back("DEC");
+        code.push_back("STORE 4");
+
+        code.push_back("LOAD 0");
+        code.push_back("SHL");
+        code.push_back("STORE 5");
+        code.push_back("LOAD 1");
+        code.push_back("SUB 5");
+
+        // if D < 2P
+        code.push_back("JZERO 2");
+        code.push_back("JUMP 10");
+            code.push_back("LOAD 2");
+            code.push_back("INC");
+            code.push_back("SHL");
+            code.push_back("STORE 2");
+            code.push_back("LOAD 0");
+            code.push_back("SHL");
+            code.push_back("SUB 1");
+            code.push_back("STORE 0");
+            code.push_back("JUMP 7");
+        //else
+            code.push_back("LOAD 2");
+            code.push_back("SHL");
+            code.push_back("STORE 2");
+            code.push_back("LOAD 0");
+            code.push_back("SHL");
+            code.push_back("STORE 0");
+        
+        code.push_back("LOAD 4");
+
+    code.push_back("JUMP -26");
+
+    code.push_back("LOAD 3");
+    code.push_back("JZERO 7");
+    code.push_back("DEC");
+    code.push_back("STORE 3");
+    code.push_back("LOAD 0");
+    code.push_back("SHR");
+    code.push_back("STORE 0");
+    code.push_back("JUMP -7");
+    code.push_back("LOAD 0");
+
+    //code.push_back("SHR");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
 
 
 int gen_ConstNumber(int num)

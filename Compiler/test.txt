@@ -1,10 +1,13 @@
+( Rozklad liczby na czynniki pierwsze )
 VAR
-    a b
+    n m a
 BEGIN
-    a := 20;
-    b := 4;
+    n := 15;
+    m := 10;
 
-    a := a / b;
+    m := 50-2;
+    WRITE m;
 
-    WRITE a;
+    n := 7 % 5;
+    WRITE n;
 END
