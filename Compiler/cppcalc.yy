@@ -126,7 +126,7 @@ condition:
 
 value:
     num                                                                   {if(DBG) cout << "num " << $1 << " "; $$ = gen_ConstNumber($1);}
-|   identifier                                                            {if(DBG) cout << "id" << endl;}
+|   identifier                                                            {if(DBG) cout << "id" << endl; $$ = $1;}
 ;
 
 identifier:
@@ -186,9 +186,9 @@ int gen_commnad_assign(int idt, int expr)
 {
 	cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[idt];                                           // zapisujemy adres zmiennej w rej a
-    code.push_back("STORE 7");                                                          // zapisujemy go w rej 7
+    code.push_back("STORE 8");                                                          // zapisujemy go w rej 7
     code.insert(code.end(), codeFragments[expr].begin(), codeFragments[expr].end());    // zapisujemy wartosc wyrazenia w rej a
-    code.push_back("STOREI 7");                                                         // zapisujemy ja pod zmienna
+    code.push_back("STOREI 8");                                                         // zapisujemy ja pod zmienna
 
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
@@ -479,7 +479,15 @@ int gen_expr_mult(int v1, int v2)
 
 int gen_expr_div(int v1, int v2)
 {
-    vector<string> code = codeFragments[v2];
+    vector<string> code;
+    code.push_back("ZERO");
+    code.push_back("STORE 0");
+    code.push_back("STORE 1");
+    code.push_back("STORE 2");
+    code.push_back("STORE 3");
+    code.push_back("STORE 4");
+    code.push_back("STORE 5");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
     code.push_back("STORE 5");
     code.push_back("LOADI 5");
     code.push_back("STORE 1");
@@ -487,6 +495,8 @@ int gen_expr_div(int v1, int v2)
     code.push_back("STORE 5");
     code.push_back("LOADI 5");
     code.push_back("STORE 0");
+
+
 
     // zapisz P pod mem[5], zacznij liczyć n
     code.push_back("STORE 5");
@@ -553,7 +563,15 @@ int gen_expr_div(int v1, int v2)
 
 int gen_expr_mod(int v1, int v2)
 {
-    vector<string> code = codeFragments[v2];
+    vector<string> code;
+    code.push_back("ZERO");
+    code.push_back("STORE 0");
+    code.push_back("STORE 1");
+    code.push_back("STORE 2");
+    code.push_back("STORE 3");
+    code.push_back("STORE 4");
+    code.push_back("STORE 5");
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
     code.push_back("STORE 5");
     code.push_back("LOADI 5");
     code.push_back("STORE 1");
@@ -640,10 +658,10 @@ int gen_ConstNumber(int num)
     vector<string> code;
 
     setRegister(code, memory_used++);       // zapisujemy adres gdzie stala bedzie przechowywana
-    code.push_back("STORE 0");              // zapisujemy do rejestru 0
+    code.push_back("STORE 9");              // zapisujemy do rejestru 9
     setRegister(code, num);                 // ustawiamy wartosc stalej w rejestrze a
-    code.push_back("STOREI 0");             // zapisujemy wartosc pod adres gdzie stala jest przechowywana
-    code.push_back("LOAD 0");               // wykonujemy to co tzeba - ustawiamy rejestr a na adres stalej w pamieci
+    code.push_back("STOREI 9");             // zapisujemy wartosc pod adres gdzie stala jest przechowywana
+    code.push_back("LOAD 9");               // wykonujemy to co tzeba - ustawiamy rejestr a na adres stalej w pamieci
     
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
