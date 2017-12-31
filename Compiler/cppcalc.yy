@@ -269,6 +269,16 @@ int gen_command_for_to(string* pid, int v1, int v2, int cmds)
 {
     if(CODE_DBG) cout << __FUNCTION__ << endl;
     
+    if(variables.find(*pid) != variables.end())
+    {
+        cout <<  "jest juz zadeklarowany, na koniec wypierdol" << endl;
+    }
+    else
+    {
+        cout << "nie ma więc zadeklaruj, a na koniec wypierdol" << endl;
+    }
+
+
     int commandsLength = codeFragments[cmds].size();
     
     vector<string> code;
@@ -312,6 +322,13 @@ int gen_command_for_to(string* pid, int v1, int v2, int cmds)
     code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
 
     codeFragments.push_back(code);
+
+    variables.erase(*pid);
+
+    if(isAnyPossibleIteratorLeft())
+    {
+        cout << "jakas niezadeklarowana zmienna - wypierdol progarm" << endl;
+    }
     return codeFragments.size() - 1;    
 }
 
@@ -786,8 +803,11 @@ int gen_Pidentifier(std::string* name)
 
 	if(variables.find(*name) == variables.end())
     {
-      	cerr << "ERROR: variable \'" << *name << "\' doesn't exist" << endl;
-      	exit(0);
+      	variables[*name] = make_shared<value_t>(0, 1, memory_used, *name);
+        memory_used++;
+
+        setRegister(code, variables[*name]->memory_position);
+        cout << "declare possible iterator " << *name << endl;
     }
     else
     {
@@ -847,8 +867,11 @@ int gen_ArrayPid(std::string* arrayName, std::string* positionPid)
     }
     if(variables.find(*positionPid) == variables.end())
     {
-      	cerr << "ERROR: variable \'" << *positionPid << "\' doesn't exist" << endl;
-      	exit(0);
+        variables[*positionPid] = make_shared<value_t>(0, 1, memory_used, *positionPid);
+        memory_used++;
+
+        setRegister(code, variables[*positionPid]->memory_position);
+        cout << "declare possible iterator " << endl;
     }
     else
     {
@@ -973,6 +996,16 @@ void finalizeJumps(int finalCode)
         }
         k++;
     }
+}
+
+bool isAnyPossibleIteratorLeft()
+{
+    for(const auto& var : variables)
+    {
+        if(var.second->possibleIterator) return true;
+    }
+
+    return false;
 }
 
 int main() 
