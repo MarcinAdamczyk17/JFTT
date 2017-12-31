@@ -13,7 +13,10 @@ int gen_commnad_assign(int, int);
 int gen_command_ifelse(int, int, int);
 int gen_command_if(int, int);
 int gen_command_while(int, int);
+int gen_command_for_to(std::string*, int, int, int);
+int gen_command_for_downto(std::string*, int, int, int);
 int gen_command_write(int);
+int gen_command_read(int);
 
 int gen_condition_equal(int, int);
 int gen_condition_notEqual(int, int);
@@ -29,13 +32,13 @@ int gen_expr_mult(int, int);
 int gen_expr_div(int, int);
 int gen_expr_mod(int, int);
 
-int gen_ConstNumber(int);
+int gen_ConstNumber(unsigned long long);
 
 int gen_Pidentifier(std::string*);
 int gen_ArrayConst(std::string*, int);
 int gen_ArrayPid(std::string*, std::string*);
 
-void setRegister(std::vector<std::string>&, int);
+void setRegister(std::vector<std::string>&, unsigned long long);
 
 
 void printVector(std::vector<std::string>&);

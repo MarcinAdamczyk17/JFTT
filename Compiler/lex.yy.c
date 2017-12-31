@@ -442,9 +442,11 @@ char *yytext;
 	#define debug 0
 
 	typedef yy::cppcalc::token token;
+
+    bool for_flag = false;
 #define COMMENT 1
 
-#line 448 "lex.yy.c"
+#line 450 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -606,10 +608,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 18 "cppcalc.l"
+#line 20 "cppcalc.l"
 
 
-#line 613 "lex.yy.c"
+#line 615 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -694,225 +696,225 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 20 "cppcalc.l"
+#line 22 "cppcalc.l"
 BEGIN(COMMENT);
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 21 "cppcalc.l"
+#line 23 "cppcalc.l"
 BEGIN(INITIAL);
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 22 "cppcalc.l"
+#line 24 "cppcalc.l"
 
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 25 "cppcalc.l"
+#line 27 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::VAR;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 26 "cppcalc.l"
+#line 28 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::START;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 27 "cppcalc.l"
+#line 29 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::END;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 28 "cppcalc.l"
+#line 30 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::IF;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 29 "cppcalc.l"
+#line 31 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::THEN;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 30 "cppcalc.l"
+#line 32 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::ELSE;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 31 "cppcalc.l"
+#line 33 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::ENDIF;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 32 "cppcalc.l"
+#line 34 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::WHILE;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 33 "cppcalc.l"
+#line 35 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::DO;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 34 "cppcalc.l"
+#line 36 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::ENDWHILE;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 35 "cppcalc.l"
-{if(debug) std::cout << yytext; return token::FOR;}
+#line 37 "cppcalc.l"
+{if(debug) std::cout << yytext; for_flag = true; return token::FOR;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 36 "cppcalc.l"
+#line 38 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::FROM;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 37 "cppcalc.l"
+#line 39 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::TO;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 38 "cppcalc.l"
+#line 40 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::DOWNTO;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 39 "cppcalc.l"
+#line 41 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::ENDFOR;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 40 "cppcalc.l"
+#line 42 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::READ;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 41 "cppcalc.l"
+#line 43 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::WRITE;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 42 "cppcalc.l"
+#line 44 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::SKIP;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 43 "cppcalc.l"
+#line 45 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::SC;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 44 "cppcalc.l"
+#line 46 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::ASSIGN;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 45 "cppcalc.l"
+#line 47 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::EQUAL;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 46 "cppcalc.l"
+#line 48 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::DIFFERENT;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 47 "cppcalc.l"
+#line 49 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::SMALLER_THAN;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 48 "cppcalc.l"
+#line 50 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::BIGGER_THAN;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 49 "cppcalc.l"
+#line 51 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::SMALLER_THAN_OR_EQUAL;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 50 "cppcalc.l"
+#line 52 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::BIGGER_THAN_OR_EQUAL;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 51 "cppcalc.l"
+#line 53 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::VAR;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 52 "cppcalc.l"
+#line 54 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::ADD;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 53 "cppcalc.l"
+#line 55 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::SUB;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 54 "cppcalc.l"
+#line 56 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::MULT;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 55 "cppcalc.l"
+#line 57 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::DIV;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 56 "cppcalc.l"
+#line 58 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::POW;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 57 "cppcalc.l"
+#line 59 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::LEFT_BRACKET;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 58 "cppcalc.l"
+#line 60 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::RIGHT_BRACKET;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 59 "cppcalc.l"
+#line 61 "cppcalc.l"
 {if(debug) std::cout << yytext; return token::MOD;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 61 "cppcalc.l"
+#line 63 "cppcalc.l"
 {if(debug) std::cout << yytext; yylval->sval = new std::string(yytext, yyleng); return token::pidentifier;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 62 "cppcalc.l"
-{if(debug) std::cout << yytext; yylval->ival = atoi(yytext); return token::num;}
+#line 64 "cppcalc.l"
+{if(debug) std::cout << yytext; yylval->llval = atoll(yytext); return token::num;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 64 "cppcalc.l"
+#line 66 "cppcalc.l"
 {if(debug) std::cout << yytext;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 65 "cppcalc.l"
+#line 67 "cppcalc.l"
 {if(debug) std::cout << yytext;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 66 "cppcalc.l"
+#line 68 "cppcalc.l"
 {printf("unknown char %s", yytext); }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 68 "cppcalc.l"
+#line 70 "cppcalc.l"
 ECHO;
 	YY_BREAK
-#line 916 "lex.yy.c"
+#line 918 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(COMMENT):
 	yyterminate();
@@ -1803,5 +1805,5 @@ int main()
 	return 0;
 	}
 #endif
-#line 68 "cppcalc.l"
+#line 70 "cppcalc.l"
 

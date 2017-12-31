@@ -42,7 +42,7 @@
 // //                    "%code requires" blocks.
 #line 7 "cppcalc.yy" // lalr1.cc:377
 
-    #define DBG 1
+    #define DBG 0
     #define YYDEBUG 1
 
     #include <stdio.h>
@@ -146,10 +146,12 @@ namespace yy {
     {
     #line 25 "cppcalc.yy" // lalr1.cc:377
 
+    vector<int>* vec = new vector<int>(100);
     string* sval;
     int ival;
+    unsigned long long llval;
 
-#line 153 "cppcalc.tab.hh" // lalr1.cc:377
+#line 155 "cppcalc.tab.hh" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -524,7 +526,7 @@ namespace yy {
 
 
 } // yy
-#line 528 "cppcalc.tab.hh" // lalr1.cc:377
+#line 530 "cppcalc.tab.hh" // lalr1.cc:377
 
 
 

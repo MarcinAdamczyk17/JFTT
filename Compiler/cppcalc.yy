@@ -5,7 +5,7 @@
 %define parser_class_name {cppcalc}
 %debug
 %code requires {
-    #define DBG 1
+    #define DBG 0
     #define YYDEBUG 1
 
     #include <stdio.h>
@@ -23,8 +23,10 @@
 }
 
 %union {
+    vector<int>* vec = new vector<int>(100);
     string* sval;
     int ival;
+    unsigned long long llval;
 }
 
 
@@ -58,7 +60,8 @@
 %token num
 
 %type <sval> pidentifier
-%type <ival> num command commands
+%type <llval> num
+%type <ival> command commands
 %type <ival> value
 %type <ival> identifier
 %type <ival> condition expression 
@@ -99,9 +102,9 @@ command:
 |   IF condition THEN commands ELSE commands ENDIF                        {if(DBG) cout << "if" << endl; $$ = gen_command_ifelse($2, $4, $6);}
 |   IF condition THEN commands ENDIF                                      {if(DBG) cout << "if" << endl; $$ = gen_command_if($2, $4);}
 |   WHILE condition DO commands ENDWHILE                                  {if(DBG) cout << "while" << endl; $$ = gen_command_while($2, $4);}
-|   FOR pidentifier FROM value TO value DO commands ENDFOR                {if(DBG) cout << "for to" << endl;}
-|   FOR pidentifier FROM value DOWNTO value DO commands ENDFOR            {if(DBG) cout << "for downto" << endl;}
-|   READ identifier SC                                                    {if(DBG) cout << "read" << endl;}
+|   FOR pidentifier FROM value TO value DO commands ENDFOR                {if(DBG) cout << "for to" << endl; $$ = gen_command_for_to($2, $4, $6, $8);}
+|   FOR pidentifier FROM value DOWNTO value DO commands ENDFOR            {if(DBG) cout << "for downto" << endl; $$ = gen_command_for_downto($2, $4, $6, $8);}
+|   READ identifier SC                                                    {if(DBG) cout << "read" << endl; $$ = gen_command_read($2);}
 |   WRITE value SC                                                        {if(DBG) cout << "write" << endl; $$ = gen_command_write($2);}
 |   SKIP SC                                                               {if(DBG) cout << "skip" << endl;}
 ;
@@ -146,10 +149,10 @@ identifier:
 #include "types.h"
 #include "functions.h"
 
-#define CODE_DBG 1
+#define CODE_DBG 0
 using namespace std;
 
-int memory_used = 10;
+int memory_used = 11;
 vector<vector<string>> codeFragments;
 std::map<string, std::shared_ptr<value_t>> variables;
 
@@ -168,12 +171,11 @@ void endThisShit(int codePtr)
     myfile << "HALT" << endl;
         
     myfile.close();
-    
 }
 
 int concatenate_codes(int c1, int c2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[c1];
     code.insert(code.end(), codeFragments[c2].begin(), codeFragments[c2].end());
     
@@ -184,7 +186,7 @@ int concatenate_codes(int c1, int c2)
 
 int gen_commnad_assign(int idt, int expr)
 {
-	cout << __FUNCTION__ << endl;
+	if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[idt];                                           // zapisujemy adres zmiennej w rej a
     code.push_back("STORE 8");                                                          // zapisujemy go w rej 7
     code.insert(code.end(), codeFragments[expr].begin(), codeFragments[expr].end());    // zapisujemy wartosc wyrazenia w rej a
@@ -196,7 +198,7 @@ int gen_commnad_assign(int idt, int expr)
 
 int gen_command_ifelse(int cond, int cmds_1, int cmds_2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     
     int commandsLength = codeFragments[cmds_1].size();
     
@@ -220,7 +222,7 @@ int gen_command_ifelse(int cond, int cmds_1, int cmds_2)
 
 int gen_command_if(int cond, int cmds)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     
     int commandsLength = codeFragments[cmds].size();
     
@@ -242,7 +244,7 @@ int gen_command_if(int cond, int cmds)
 
 int gen_command_while(int cond, int cmds)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     
     int commandsLength = codeFragments[cmds].size();
     
@@ -263,10 +265,110 @@ int gen_command_while(int cond, int cmds)
     return codeFragments.size() - 1;    
 }
 
+int gen_command_for_to(string* pid, int v1, int v2, int cmds)
+{
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
+    
+    int commandsLength = codeFragments[cmds].size();
+    
+    vector<string> code;
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+    code.insert(code.end(), codeFragments[v1].begin(), codeFragments[v1].end());
+    code.push_back("STORE 9");
+    code.push_back("LOADI 9");
+    code.push_back("STOREI 8");
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+
+    int length_1 = code.size();
+
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 9");
+    code.push_back("LOADI 9");
+    code.push_back("SUBI 8");
+    code.push_back("JZERO x+1");
+
+    int length_2 = code.size();
+    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+    code.push_back("LOADI 8");
+    code.push_back("INC");
+    code.push_back("STOREI 8");
+    code.push_back("JUMP -" + to_string(code.size() - length_1));
+
+    int length_3 = code.size();
+
+    for(string& instruction : code)
+    {
+        if(instruction[0] == 'J' && instruction.find('x') != string::npos)
+        {
+            resolveJump(instruction, length_3 - length_2);
+        }
+    }
+
+    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;    
+}
+
+int gen_command_for_downto(string* pid, int v1, int v2, int cmds)
+{
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
+    
+    int commandsLength = codeFragments[cmds].size();
+    
+    vector<string> code;
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+    code.insert(code.end(), codeFragments[v1].begin(), codeFragments[v1].end());
+    code.push_back("STORE 9");
+    code.push_back("LOADI 9");
+    code.push_back("STOREI 8");
+
+    int length_1 = code.size();
+
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 9");
+    
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+    code.push_back("LOADI 8");
+    code.push_back("SUBI 9");
+    code.push_back("JZERO x+1");
+
+    int length_2 = code.size();
+    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+    code.push_back("LOADI 8");
+    code.push_back("DEC");
+    code.push_back("STOREI 8");
+    code.push_back("JUMP -" + to_string(code.size() - length_1));
+
+    int length_3 = code.size();
+
+    for(string& instruction : code)
+    {
+        if(instruction[0] == 'J' && instruction.find('x') != string::npos)
+        {
+            resolveJump(instruction, length_3 - length_2);
+        }
+    }
+
+    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;    
+}
 
 int gen_command_write(int v)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v];
 
     code.push_back("STORE 8");
@@ -277,10 +379,23 @@ int gen_command_write(int v)
     return codeFragments.size() - 1;
 }
 
+int gen_command_read(int pid)
+{
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
+    
+    vector<string> code = codeFragments[pid];
+
+    code.push_back("STORE 8");
+    code.push_back("GET");
+    code.push_back("STOREI 8");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
 
 int gen_condition_equal(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v1];     
     
     code.push_back("STORE 6");
@@ -300,7 +415,7 @@ int gen_condition_equal(int v1, int v2)
 
 int gen_condition_notEqual(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v1];     
     
     code.push_back("STORE 6");
@@ -319,7 +434,7 @@ int gen_condition_notEqual(int v1, int v2)
 
 int gen_condition_smaller(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v1];     
     
     code.push_back("STORE 6");
@@ -335,7 +450,7 @@ int gen_condition_smaller(int v1, int v2)
 
 int gen_condition_bigger(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v1];     
     
     code.push_back("STORE 6");
@@ -351,7 +466,7 @@ int gen_condition_bigger(int v1, int v2)
 
 int gen_condition_smallerOrEqual(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v1];     
     
     code.push_back("STORE 6");
@@ -368,7 +483,7 @@ int gen_condition_smallerOrEqual(int v1, int v2)
 
 int gen_condition_biggerOrEqual(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v1];     
     
     code.push_back("STORE 6");
@@ -383,11 +498,9 @@ int gen_condition_biggerOrEqual(int v1, int v2)
     return codeFragments.size() - 1;
 }
 
-
-
 int gen_expr_value(int v)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v];     // ustawiamy adres zmiennej w rejestrze a
     code.push_back("STORE 1");                  // zapisujemy adres w rej 1
     code.push_back("LOADI 1");                  // ladujemy wartosc spod rej 1 
@@ -398,7 +511,7 @@ int gen_expr_value(int v)
 
 int gen_expr_add(int v1, int v2)
 {
-	cout << __FUNCTION__ << endl;	
+	if(CODE_DBG) cout << __FUNCTION__ << endl;	
     vector<string> code = codeFragments[v1];                                         // ustawiamy adres zmiennej 1 w rej a
     code.push_back("STORE 1");                                                       // zapisujemy go w rej 1
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // ustawiamy adres zmiennej 2 w rej a
@@ -413,7 +526,7 @@ int gen_expr_add(int v1, int v2)
 
 int gen_expr_sub(int v1, int v2)
 {
-	cout << __FUNCTION__ << endl;	
+	if(CODE_DBG) cout << __FUNCTION__ << endl;	
     vector<string> code = codeFragments[v1];                                         // ustawiamy adres zmiennej 1 w rej a
     code.push_back("STORE 1");                                                       // zapisujemy go w rej 1
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // ustawiamy adres zmiennej 2 w rej a
@@ -428,7 +541,7 @@ int gen_expr_sub(int v1, int v2)
 
 int gen_expr_mult(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
 
     vector<string> code = codeFragments[v1];
     code.push_back("STORE 2");
@@ -651,17 +764,16 @@ int gen_expr_mod(int v1, int v2)
     return codeFragments.size() - 1;
 }
 
-
-int gen_ConstNumber(int num)
+int gen_ConstNumber(unsigned long long num)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code;
 
     setRegister(code, memory_used++);       // zapisujemy adres gdzie stala bedzie przechowywana
-    code.push_back("STORE 9");              // zapisujemy do rejestru 9
+    code.push_back("STORE 10");              // zapisujemy do rejestru 10
     setRegister(code, num);                 // ustawiamy wartosc stalej w rejestrze a
-    code.push_back("STOREI 9");             // zapisujemy wartosc pod adres gdzie stala jest przechowywana
-    code.push_back("LOAD 9");               // wykonujemy to co tzeba - ustawiamy rejestr a na adres stalej w pamieci
+    code.push_back("STOREI 10");             // zapisujemy wartosc pod adres gdzie stala jest przechowywana
+    code.push_back("LOAD 10");               // wykonujemy to co tzeba - ustawiamy rejestr a na adres stalej w pamieci
     
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
@@ -669,7 +781,7 @@ int gen_ConstNumber(int num)
 
 int gen_Pidentifier(std::string* name)
 {
-    cout << __FUNCTION__ << *name << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << *name << endl;
 	vector<string> code;
 
 	if(variables.find(*name) == variables.end())
@@ -694,7 +806,7 @@ int gen_Pidentifier(std::string* name)
 
 int gen_ArrayConst(std::string* name, int position)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
 	vector<string> code;
 
 	if(variables.find(*name) == variables.end())
@@ -725,7 +837,7 @@ int gen_ArrayConst(std::string* name, int position)
 
 int gen_ArrayPid(std::string* arrayName, std::string* positionPid)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
 	vector<string> code;
 
 	if(variables.find(*arrayName) == variables.end())
@@ -761,7 +873,7 @@ int gen_ArrayPid(std::string* arrayName, std::string* positionPid)
 
 void declareVariable(string* name)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     if(variables.find(*name) == variables.end())
     {
         variables[*name] = make_shared<value_t>(0, 0, memory_used, *name);
@@ -778,7 +890,7 @@ void declareVariable(string* name)
 
 void declareArray(std::string* name, int capacity)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
 	if(variables.find(*name) == variables.end())
 	{
         variables[*name] = make_shared<value_t>(1, 0, memory_used, *name);
@@ -793,24 +905,26 @@ void declareArray(std::string* name, int capacity)
     }
 }
 
-void setRegister(vector<string>& code, int value)
+void setRegister(vector<string>& code, unsigned long long value)
 {
-	cout << __FUNCTION__ << endl;
+	if(CODE_DBG) cout << __FUNCTION__ << " "<< value << endl;
 
     code.push_back("ZERO");
 
+    int varSize = 64;
     bool firstShift = true;
 
     int i;
-    int bits[32];
-    for (i = 0; i < 32; ++i) {
-		bits[31-i] = value & (1 << i) ? 1 : 0;
+    unsigned long long theLongOne = 1;
+    int bits[varSize];
+    for (i = 0; i < varSize; ++i) {
+		bits[varSize-1-i] = value & (theLongOne << i) ? 1 : 0;
     }
+
     i = 0;
-    
     while(!bits[i]) ++i;
 
-    for (i; i < 32; ++i) 
+    for (i; i < varSize; ++i) 
     {
 		if(bits[i])
 		{
@@ -841,7 +955,7 @@ void resolveJump(std::string& instruction, int cmdsLength)
     int xpos = instruction.find('x');
     int shift = stoi(instruction.substr(xpos+1, instruction.size()));
 
-    cout << "resolve " << to_string(shift + cmdsLength) << endl;
+    if(CODE_DBG) cout << "resolve " << to_string(shift + cmdsLength) << endl;
 
     instruction.replace(xpos, instruction.size(), to_string(shift + cmdsLength));
 }
@@ -863,10 +977,10 @@ void finalizeJumps(int finalCode)
 
 int main() 
 {
-  	cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n";
+  	cout << "\nSTARTED\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n";
   	yy::cppcalc parser;
   	int v = parser.parse();
-    cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+    cout << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\nFINISHED\n\n";
 
   	return v;
 }

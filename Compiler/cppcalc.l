@@ -13,6 +13,8 @@
 	#define debug 0
 
 	typedef yy::cppcalc::token token;
+
+    bool for_flag = false;
 %}
 %x COMMENT
 %%
@@ -32,7 +34,7 @@
 "WHILE"	    {if(debug) std::cout << yytext; return token::WHILE;}
 "DO"	    {if(debug) std::cout << yytext; return token::DO;}
 "ENDWHILE"  {if(debug) std::cout << yytext; return token::ENDWHILE;}
-"FOR"	    {if(debug) std::cout << yytext; return token::FOR;}
+"FOR"	    {if(debug) std::cout << yytext; for_flag = true; return token::FOR;}
 "FROM"	    {if(debug) std::cout << yytext; return token::FROM;}
 "TO"	    {if(debug) std::cout << yytext; return token::TO;}
 "DOWNTO"    {if(debug) std::cout << yytext; return token::DOWNTO;}
@@ -59,7 +61,7 @@
 "%"	    	{if(debug) std::cout << yytext; return token::MOD;}
 
 [_a-z]+	    {if(debug) std::cout << yytext; yylval->sval = new std::string(yytext, yyleng); return token::pidentifier;}
-[0-9]+	    {if(debug) std::cout << yytext; yylval->ival = atoi(yytext); return token::num;}
+[0-9]+	    {if(debug) std::cout << yytext; yylval->llval = atoll(yytext); return token::num;}
 
 \n	    	{if(debug) std::cout << yytext;}
 [ \t]	    {if(debug) std::cout << yytext;}

@@ -46,7 +46,7 @@
 #include "cppcalc.tab.hh"
 
 // User implementation prologue.
-#line 72 "cppcalc.yy" // lalr1.cc:412
+#line 75 "cppcalc.yy" // lalr1.cc:412
 
     extern int yylex(yy::cppcalc::semantic_type *yylval, yy::cppcalc::location_type* yylloc);
 
@@ -469,7 +469,7 @@ namespace yy {
 
 
     // User initialization code.
-    #line 75 "cppcalc.yy" // lalr1.cc:741
+    #line 78 "cppcalc.yy" // lalr1.cc:741
 {
     // Filename for locations here
     //@$.begin.filename = @$.end.filename = new std::string("stdin");
@@ -583,188 +583,188 @@ namespace yy {
           switch (yyn)
             {
   case 2:
-#line 83 "cppcalc.yy" // lalr1.cc:859
+#line 86 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "program" << endl; endThisShit((yystack_[1].value.ival));}
 #line 589 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 3:
-#line 87 "cppcalc.yy" // lalr1.cc:859
+#line 90 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "declare variable" << endl; declareVariable((yystack_[0].value.sval));}
 #line 595 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 4:
-#line 88 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "delcare array" << endl; declareArray((yystack_[3].value.sval), (yystack_[1].value.ival));}
+#line 91 "cppcalc.yy" // lalr1.cc:859
+    {if(DBG) cout << "delcare array" << endl; declareArray((yystack_[3].value.sval), (yystack_[1].value.llval));}
 #line 601 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 6:
-#line 93 "cppcalc.yy" // lalr1.cc:859
+#line 96 "cppcalc.yy" // lalr1.cc:859
     {(yylhs.value.ival) = concatenate_codes((yystack_[1].value.ival), (yystack_[0].value.ival));}
 #line 607 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 7:
-#line 94 "cppcalc.yy" // lalr1.cc:859
+#line 97 "cppcalc.yy" // lalr1.cc:859
     {}
 #line 613 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 8:
-#line 98 "cppcalc.yy" // lalr1.cc:859
+#line 101 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "assign" << endl; (yylhs.value.ival) = gen_commnad_assign((yystack_[3].value.ival), (yystack_[1].value.ival));}
 #line 619 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 9:
-#line 99 "cppcalc.yy" // lalr1.cc:859
+#line 102 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "if" << endl; (yylhs.value.ival) = gen_command_ifelse((yystack_[5].value.ival), (yystack_[3].value.ival), (yystack_[1].value.ival));}
 #line 625 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 10:
-#line 100 "cppcalc.yy" // lalr1.cc:859
+#line 103 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "if" << endl; (yylhs.value.ival) = gen_command_if((yystack_[3].value.ival), (yystack_[1].value.ival));}
 #line 631 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 11:
-#line 101 "cppcalc.yy" // lalr1.cc:859
+#line 104 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "while" << endl; (yylhs.value.ival) = gen_command_while((yystack_[3].value.ival), (yystack_[1].value.ival));}
 #line 637 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 12:
-#line 102 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "for to" << endl;}
+#line 105 "cppcalc.yy" // lalr1.cc:859
+    {if(DBG) cout << "for to" << endl; (yylhs.value.ival) = gen_command_for_to((yystack_[7].value.sval), (yystack_[5].value.ival), (yystack_[3].value.ival), (yystack_[1].value.ival));}
 #line 643 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 13:
-#line 103 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "for downto" << endl;}
+#line 106 "cppcalc.yy" // lalr1.cc:859
+    {if(DBG) cout << "for downto" << endl; (yylhs.value.ival) = gen_command_for_downto((yystack_[7].value.sval), (yystack_[5].value.ival), (yystack_[3].value.ival), (yystack_[1].value.ival));}
 #line 649 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 14:
-#line 104 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "read" << endl;}
+#line 107 "cppcalc.yy" // lalr1.cc:859
+    {if(DBG) cout << "read" << endl; (yylhs.value.ival) = gen_command_read((yystack_[1].value.ival));}
 #line 655 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 15:
-#line 105 "cppcalc.yy" // lalr1.cc:859
+#line 108 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "write" << endl; (yylhs.value.ival) = gen_command_write((yystack_[1].value.ival));}
 #line 661 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 16:
-#line 106 "cppcalc.yy" // lalr1.cc:859
+#line 109 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "skip" << endl;}
 #line 667 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 17:
-#line 110 "cppcalc.yy" // lalr1.cc:859
+#line 113 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "value" << endl; (yylhs.value.ival) = gen_expr_value((yystack_[0].value.ival));}
 #line 673 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 18:
-#line 111 "cppcalc.yy" // lalr1.cc:859
+#line 114 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "add" << endl; (yylhs.value.ival) = gen_expr_add((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 679 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 19:
-#line 112 "cppcalc.yy" // lalr1.cc:859
+#line 115 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "sub" << endl; (yylhs.value.ival) = gen_expr_sub((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 685 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 20:
-#line 113 "cppcalc.yy" // lalr1.cc:859
+#line 116 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "mult" << endl; (yylhs.value.ival) = gen_expr_mult((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 691 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 21:
-#line 114 "cppcalc.yy" // lalr1.cc:859
+#line 117 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "div" << endl; (yylhs.value.ival) = gen_expr_div((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 697 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 22:
-#line 115 "cppcalc.yy" // lalr1.cc:859
+#line 118 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "mod" << endl; (yylhs.value.ival) = gen_expr_mod((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 703 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 23:
-#line 119 "cppcalc.yy" // lalr1.cc:859
+#line 122 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "eq" << endl; (yylhs.value.ival) = gen_condition_equal((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 709 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 24:
-#line 120 "cppcalc.yy" // lalr1.cc:859
+#line 123 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "neq" << endl; (yylhs.value.ival) = gen_condition_notEqual((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 715 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 25:
-#line 121 "cppcalc.yy" // lalr1.cc:859
+#line 124 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "st" << endl; (yylhs.value.ival) = gen_condition_smaller((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 721 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 26:
-#line 122 "cppcalc.yy" // lalr1.cc:859
+#line 125 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "bt" << endl; (yylhs.value.ival) = gen_condition_bigger((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 727 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 27:
-#line 123 "cppcalc.yy" // lalr1.cc:859
+#line 126 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "set" << endl; (yylhs.value.ival) = gen_condition_smallerOrEqual((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 733 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 28:
-#line 124 "cppcalc.yy" // lalr1.cc:859
+#line 127 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "bet" << endl; (yylhs.value.ival) = gen_condition_biggerOrEqual((yystack_[2].value.ival), (yystack_[0].value.ival));}
 #line 739 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 29:
-#line 128 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "num " << (yystack_[0].value.ival) << " "; (yylhs.value.ival) = gen_ConstNumber((yystack_[0].value.ival));}
+#line 131 "cppcalc.yy" // lalr1.cc:859
+    {if(DBG) cout << "num " << (yystack_[0].value.llval) << " "; (yylhs.value.ival) = gen_ConstNumber((yystack_[0].value.llval));}
 #line 745 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 30:
-#line 129 "cppcalc.yy" // lalr1.cc:859
+#line 132 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "id" << endl; (yylhs.value.ival) = (yystack_[0].value.ival);}
 #line 751 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 31:
-#line 133 "cppcalc.yy" // lalr1.cc:859
+#line 136 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "pid " << endl; (yylhs.value.ival) = gen_Pidentifier((yystack_[0].value.sval));}
 #line 757 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 32:
-#line 134 "cppcalc.yy" // lalr1.cc:859
+#line 137 "cppcalc.yy" // lalr1.cc:859
     {if(DBG) cout << "array pid " << endl; (yylhs.value.ival) = gen_ArrayPid((yystack_[3].value.sval), (yystack_[1].value.sval));}
 #line 763 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
   case 33:
-#line 135 "cppcalc.yy" // lalr1.cc:859
-    {if(DBG) cout << "array num " << endl; (yylhs.value.ival) = gen_ArrayConst((yystack_[3].value.sval), (yystack_[1].value.ival));}
+#line 138 "cppcalc.yy" // lalr1.cc:859
+    {if(DBG) cout << "array num " << endl; (yylhs.value.ival) = gen_ArrayConst((yystack_[3].value.sval), (yystack_[1].value.llval));}
 #line 769 "cppcalc.tab.cc" // lalr1.cc:859
     break;
 
@@ -1080,10 +1080,10 @@ namespace yy {
   const unsigned char
   cppcalc::yyrline_[] =
   {
-       0,    83,    83,    87,    88,    89,    93,    94,    98,    99,
-     100,   101,   102,   103,   104,   105,   106,   110,   111,   112,
-     113,   114,   115,   119,   120,   121,   122,   123,   124,   128,
-     129,   133,   134,   135
+       0,    86,    86,    90,    91,    92,    96,    97,   101,   102,
+     103,   104,   105,   106,   107,   108,   109,   113,   114,   115,
+     116,   117,   118,   122,   123,   124,   125,   126,   127,   131,
+     132,   136,   137,   138
   };
 
   // Print the state stack on the debug stream.
@@ -1169,7 +1169,7 @@ namespace yy {
 
 } // yy
 #line 1172 "cppcalc.tab.cc" // lalr1.cc:1167
-#line 138 "cppcalc.yy" // lalr1.cc:1168
+#line 141 "cppcalc.yy" // lalr1.cc:1168
 
 
 #include <fstream>
@@ -1181,10 +1181,10 @@ namespace yy {
 #include "types.h"
 #include "functions.h"
 
-#define CODE_DBG 1
+#define CODE_DBG 0
 using namespace std;
 
-int memory_used = 10;
+int memory_used = 11;
 vector<vector<string>> codeFragments;
 std::map<string, std::shared_ptr<value_t>> variables;
 
@@ -1203,12 +1203,11 @@ void endThisShit(int codePtr)
     myfile << "HALT" << endl;
         
     myfile.close();
-    
 }
 
 int concatenate_codes(int c1, int c2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[c1];
     code.insert(code.end(), codeFragments[c2].begin(), codeFragments[c2].end());
     
@@ -1219,7 +1218,7 @@ int concatenate_codes(int c1, int c2)
 
 int gen_commnad_assign(int idt, int expr)
 {
-	cout << __FUNCTION__ << endl;
+	if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[idt];                                           // zapisujemy adres zmiennej w rej a
     code.push_back("STORE 8");                                                          // zapisujemy go w rej 7
     code.insert(code.end(), codeFragments[expr].begin(), codeFragments[expr].end());    // zapisujemy wartosc wyrazenia w rej a
@@ -1231,7 +1230,7 @@ int gen_commnad_assign(int idt, int expr)
 
 int gen_command_ifelse(int cond, int cmds_1, int cmds_2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     
     int commandsLength = codeFragments[cmds_1].size();
     
@@ -1255,7 +1254,7 @@ int gen_command_ifelse(int cond, int cmds_1, int cmds_2)
 
 int gen_command_if(int cond, int cmds)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     
     int commandsLength = codeFragments[cmds].size();
     
@@ -1277,7 +1276,7 @@ int gen_command_if(int cond, int cmds)
 
 int gen_command_while(int cond, int cmds)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     
     int commandsLength = codeFragments[cmds].size();
     
@@ -1298,10 +1297,110 @@ int gen_command_while(int cond, int cmds)
     return codeFragments.size() - 1;    
 }
 
+int gen_command_for_to(string* pid, int v1, int v2, int cmds)
+{
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
+    
+    int commandsLength = codeFragments[cmds].size();
+    
+    vector<string> code;
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+    code.insert(code.end(), codeFragments[v1].begin(), codeFragments[v1].end());
+    code.push_back("STORE 9");
+    code.push_back("LOADI 9");
+    code.push_back("STOREI 8");
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+
+    int length_1 = code.size();
+
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 9");
+    code.push_back("LOADI 9");
+    code.push_back("SUBI 8");
+    code.push_back("JZERO x+1");
+
+    int length_2 = code.size();
+    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+    code.push_back("LOADI 8");
+    code.push_back("INC");
+    code.push_back("STOREI 8");
+    code.push_back("JUMP -" + to_string(code.size() - length_1));
+
+    int length_3 = code.size();
+
+    for(string& instruction : code)
+    {
+        if(instruction[0] == 'J' && instruction.find('x') != string::npos)
+        {
+            resolveJump(instruction, length_3 - length_2);
+        }
+    }
+
+    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;    
+}
+
+int gen_command_for_downto(string* pid, int v1, int v2, int cmds)
+{
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
+    
+    int commandsLength = codeFragments[cmds].size();
+    
+    vector<string> code;
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+    code.insert(code.end(), codeFragments[v1].begin(), codeFragments[v1].end());
+    code.push_back("STORE 9");
+    code.push_back("LOADI 9");
+    code.push_back("STOREI 8");
+
+    int length_1 = code.size();
+
+    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
+    code.push_back("STORE 9");
+    
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+    code.push_back("LOADI 8");
+    code.push_back("SUBI 9");
+    code.push_back("JZERO x+1");
+
+    int length_2 = code.size();
+    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+    code.push_back("LOADI 8");
+    code.push_back("DEC");
+    code.push_back("STOREI 8");
+    code.push_back("JUMP -" + to_string(code.size() - length_1));
+
+    int length_3 = code.size();
+
+    for(string& instruction : code)
+    {
+        if(instruction[0] == 'J' && instruction.find('x') != string::npos)
+        {
+            resolveJump(instruction, length_3 - length_2);
+        }
+    }
+
+    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;    
+}
 
 int gen_command_write(int v)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v];
 
     code.push_back("STORE 8");
@@ -1312,10 +1411,23 @@ int gen_command_write(int v)
     return codeFragments.size() - 1;
 }
 
+int gen_command_read(int pid)
+{
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
+    
+    vector<string> code = codeFragments[pid];
+
+    code.push_back("STORE 8");
+    code.push_back("GET");
+    code.push_back("STOREI 8");
+
+    codeFragments.push_back(code);
+    return codeFragments.size() - 1;
+}
 
 int gen_condition_equal(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v1];     
     
     code.push_back("STORE 6");
@@ -1335,7 +1447,7 @@ int gen_condition_equal(int v1, int v2)
 
 int gen_condition_notEqual(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v1];     
     
     code.push_back("STORE 6");
@@ -1354,7 +1466,7 @@ int gen_condition_notEqual(int v1, int v2)
 
 int gen_condition_smaller(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v1];     
     
     code.push_back("STORE 6");
@@ -1370,7 +1482,7 @@ int gen_condition_smaller(int v1, int v2)
 
 int gen_condition_bigger(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v1];     
     
     code.push_back("STORE 6");
@@ -1386,7 +1498,7 @@ int gen_condition_bigger(int v1, int v2)
 
 int gen_condition_smallerOrEqual(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v1];     
     
     code.push_back("STORE 6");
@@ -1403,7 +1515,7 @@ int gen_condition_smallerOrEqual(int v1, int v2)
 
 int gen_condition_biggerOrEqual(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v1];     
     
     code.push_back("STORE 6");
@@ -1418,11 +1530,9 @@ int gen_condition_biggerOrEqual(int v1, int v2)
     return codeFragments.size() - 1;
 }
 
-
-
 int gen_expr_value(int v)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code = codeFragments[v];     // ustawiamy adres zmiennej w rejestrze a
     code.push_back("STORE 1");                  // zapisujemy adres w rej 1
     code.push_back("LOADI 1");                  // ladujemy wartosc spod rej 1 
@@ -1433,7 +1543,7 @@ int gen_expr_value(int v)
 
 int gen_expr_add(int v1, int v2)
 {
-	cout << __FUNCTION__ << endl;	
+	if(CODE_DBG) cout << __FUNCTION__ << endl;	
     vector<string> code = codeFragments[v1];                                         // ustawiamy adres zmiennej 1 w rej a
     code.push_back("STORE 1");                                                       // zapisujemy go w rej 1
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // ustawiamy adres zmiennej 2 w rej a
@@ -1448,7 +1558,7 @@ int gen_expr_add(int v1, int v2)
 
 int gen_expr_sub(int v1, int v2)
 {
-	cout << __FUNCTION__ << endl;	
+	if(CODE_DBG) cout << __FUNCTION__ << endl;	
     vector<string> code = codeFragments[v1];                                         // ustawiamy adres zmiennej 1 w rej a
     code.push_back("STORE 1");                                                       // zapisujemy go w rej 1
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());     // ustawiamy adres zmiennej 2 w rej a
@@ -1463,7 +1573,7 @@ int gen_expr_sub(int v1, int v2)
 
 int gen_expr_mult(int v1, int v2)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
 
     vector<string> code = codeFragments[v1];
     code.push_back("STORE 2");
@@ -1686,17 +1796,16 @@ int gen_expr_mod(int v1, int v2)
     return codeFragments.size() - 1;
 }
 
-
-int gen_ConstNumber(int num)
+int gen_ConstNumber(unsigned long long num)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     vector<string> code;
 
     setRegister(code, memory_used++);       // zapisujemy adres gdzie stala bedzie przechowywana
-    code.push_back("STORE 9");              // zapisujemy do rejestru 9
+    code.push_back("STORE 10");              // zapisujemy do rejestru 10
     setRegister(code, num);                 // ustawiamy wartosc stalej w rejestrze a
-    code.push_back("STOREI 9");             // zapisujemy wartosc pod adres gdzie stala jest przechowywana
-    code.push_back("LOAD 9");               // wykonujemy to co tzeba - ustawiamy rejestr a na adres stalej w pamieci
+    code.push_back("STOREI 10");             // zapisujemy wartosc pod adres gdzie stala jest przechowywana
+    code.push_back("LOAD 10");               // wykonujemy to co tzeba - ustawiamy rejestr a na adres stalej w pamieci
     
     codeFragments.push_back(code);
     return codeFragments.size() - 1;
@@ -1704,7 +1813,7 @@ int gen_ConstNumber(int num)
 
 int gen_Pidentifier(std::string* name)
 {
-    cout << __FUNCTION__ << *name << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << *name << endl;
 	vector<string> code;
 
 	if(variables.find(*name) == variables.end())
@@ -1729,7 +1838,7 @@ int gen_Pidentifier(std::string* name)
 
 int gen_ArrayConst(std::string* name, int position)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
 	vector<string> code;
 
 	if(variables.find(*name) == variables.end())
@@ -1760,7 +1869,7 @@ int gen_ArrayConst(std::string* name, int position)
 
 int gen_ArrayPid(std::string* arrayName, std::string* positionPid)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
 	vector<string> code;
 
 	if(variables.find(*arrayName) == variables.end())
@@ -1796,7 +1905,7 @@ int gen_ArrayPid(std::string* arrayName, std::string* positionPid)
 
 void declareVariable(string* name)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
     if(variables.find(*name) == variables.end())
     {
         variables[*name] = make_shared<value_t>(0, 0, memory_used, *name);
@@ -1813,7 +1922,7 @@ void declareVariable(string* name)
 
 void declareArray(std::string* name, int capacity)
 {
-    cout << __FUNCTION__ << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
 	if(variables.find(*name) == variables.end())
 	{
         variables[*name] = make_shared<value_t>(1, 0, memory_used, *name);
@@ -1828,24 +1937,26 @@ void declareArray(std::string* name, int capacity)
     }
 }
 
-void setRegister(vector<string>& code, int value)
+void setRegister(vector<string>& code, unsigned long long value)
 {
-	cout << __FUNCTION__ << endl;
+	if(CODE_DBG) cout << __FUNCTION__ << " "<< value << endl;
 
     code.push_back("ZERO");
 
+    int varSize = 64;
     bool firstShift = true;
 
     int i;
-    int bits[32];
-    for (i = 0; i < 32; ++i) {
-		bits[31-i] = value & (1 << i) ? 1 : 0;
+    unsigned long long theLongOne = 1;
+    int bits[varSize];
+    for (i = 0; i < varSize; ++i) {
+		bits[varSize-1-i] = value & (theLongOne << i) ? 1 : 0;
     }
+
     i = 0;
-    
     while(!bits[i]) ++i;
 
-    for (i; i < 32; ++i) 
+    for (i; i < varSize; ++i) 
     {
 		if(bits[i])
 		{
@@ -1876,7 +1987,7 @@ void resolveJump(std::string& instruction, int cmdsLength)
     int xpos = instruction.find('x');
     int shift = stoi(instruction.substr(xpos+1, instruction.size()));
 
-    cout << "resolve " << to_string(shift + cmdsLength) << endl;
+    if(CODE_DBG) cout << "resolve " << to_string(shift + cmdsLength) << endl;
 
     instruction.replace(xpos, instruction.size(), to_string(shift + cmdsLength));
 }
@@ -1898,10 +2009,10 @@ void finalizeJumps(int finalCode)
 
 int main() 
 {
-  	cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n";
+  	cout << "\nSTARTED\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n";
   	yy::cppcalc parser;
   	int v = parser.parse();
-    cout << "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+    cout << "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\nFINISHED\n\n";
 
   	return v;
 }
