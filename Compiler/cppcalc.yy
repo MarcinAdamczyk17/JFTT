@@ -140,6 +140,7 @@ identifier:
 
 %%
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -154,6 +155,7 @@ using namespace std;
 
 int memory_used = 11;
 vector<vector<string>> codeFragments;
+std::vector<int> iterators;
 std::map<string, std::shared_ptr<value_t>> variables;
 
 void endThisShit(int codePtr)
@@ -161,6 +163,11 @@ void endThisShit(int codePtr)
     ofstream myfile;
     myfile.open ("output.txt");
 
+    if(isAnyPossibleIteratorLeft())
+    {
+        cout << "jakas niezadeklarowana zmienna - wypierdol progarm" << endl;
+        exit(0);
+    }
     finalizeJumps(codePtr);
 
     for(string instruction : codeFragments[codePtr])
@@ -187,6 +194,12 @@ int concatenate_codes(int c1, int c2)
 int gen_commnad_assign(int idt, int expr)
 {
 	if(CODE_DBG) cout << __FUNCTION__ << endl;
+
+    if(!iterators.empty() && std::find(iterators.begin(), iterators.end(), idt) != iterators.end())
+    {
+        cout << "modyfikacja iteratora - wypierdol program" << endl;
+    }
+    
     vector<string> code = codeFragments[idt];                                           // zapisujemy adres zmiennej w rej a
     code.push_back("STORE 8");                                                          // zapisujemy go w rej 7
     code.insert(code.end(), codeFragments[expr].begin(), codeFragments[expr].end());    // zapisujemy wartosc wyrazenia w rej a
@@ -269,15 +282,12 @@ int gen_command_for_to(string* pid, int v1, int v2, int cmds)
 {
     if(CODE_DBG) cout << __FUNCTION__ << endl;
     
-    if(variables.find(*pid) != variables.end())
+    if(variables.find(*pid) == variables.end())
     {
-        cout <<  "jest juz zadeklarowany, na koniec wypierdol" << endl;
-    }
-    else
-    {
+        variables[*pid] = make_shared<value_t>(0, 1, memory_used, *pid);
+        memory_used++;
         cout << "nie ma więc zadeklaruj, a na koniec wypierdol" << endl;
     }
-
 
     int commandsLength = codeFragments[cmds].size();
     
@@ -324,11 +334,12 @@ int gen_command_for_to(string* pid, int v1, int v2, int cmds)
     codeFragments.push_back(code);
 
     variables.erase(*pid);
-
     if(isAnyPossibleIteratorLeft())
     {
         cout << "jakas niezadeklarowana zmienna - wypierdol progarm" << endl;
+        exit(0);
     }
+
     return codeFragments.size() - 1;    
 }
 
@@ -336,6 +347,13 @@ int gen_command_for_downto(string* pid, int v1, int v2, int cmds)
 {
     if(CODE_DBG) cout << __FUNCTION__ << endl;
     
+    if(variables.find(*pid) == variables.end())
+    {
+        variables[*pid] = make_shared<value_t>(0, 1, memory_used, *pid);
+        memory_used++;
+        cout << "nie ma więc zadeklaruj, a na koniec wypierdol" << endl;
+    }
+
     int commandsLength = codeFragments[cmds].size();
     
     vector<string> code;
@@ -380,6 +398,14 @@ int gen_command_for_downto(string* pid, int v1, int v2, int cmds)
     code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
 
     codeFragments.push_back(code);
+
+
+    variables.erase(*pid);
+    if(isAnyPossibleIteratorLeft())
+    {
+        cout << "jakas niezadeklarowana zmienna - wypierdol progarm" << endl;
+        exit(0);
+    }
     return codeFragments.size() - 1;    
 }
 
@@ -807,6 +833,7 @@ int gen_Pidentifier(std::string* name)
         memory_used++;
 
         setRegister(code, variables[*name]->memory_position);
+        iterators.push_back(codeFragments.size());
         cout << "declare possible iterator " << *name << endl;
     }
     else
@@ -814,7 +841,7 @@ int gen_Pidentifier(std::string* name)
     	if(variables[*name]->isArray){
     		cerr << "ERROR: variable \'" << *name << "\' is array type" << endl;
     		exit(0);
-    	}	
+    	}
 
     	setRegister(code, variables[*name]->memory_position);
     }
