@@ -153,7 +153,7 @@ identifier:
 #define CODE_DBG 0
 using namespace std;
 
-int memory_used = 11;
+int memory_used = 12;
 vector<vector<string>> codeFragments;
 std::vector<int> iterators;
 std::map<string, std::shared_ptr<value_t>> variables;
@@ -334,11 +334,6 @@ int gen_command_for_to(string* pid, int v1, int v2, int cmds)
     codeFragments.push_back(code);
 
     variables.erase(*pid);
-    if(isAnyPossibleIteratorLeft())
-    {
-        cout << "jakas niezadeklarowana zmienna - wypierdol progarm" << endl;
-        exit(0);
-    }
 
     return codeFragments.size() - 1;    
 }
@@ -401,11 +396,7 @@ int gen_command_for_downto(string* pid, int v1, int v2, int cmds)
 
 
     variables.erase(*pid);
-    if(isAnyPossibleIteratorLeft())
-    {
-        cout << "jakas niezadeklarowana zmienna - wypierdol progarm" << endl;
-        exit(0);
-    }
+
     return codeFragments.size() - 1;    
 }
 
@@ -897,7 +888,6 @@ int gen_ArrayPid(std::string* arrayName, std::string* positionPid)
         variables[*positionPid] = make_shared<value_t>(0, 1, memory_used, *positionPid);
         memory_used++;
 
-        setRegister(code, variables[*positionPid]->memory_position);
         cout << "declare possible iterator " << endl;
     }
     else
@@ -912,10 +902,12 @@ int gen_ArrayPid(std::string* arrayName, std::string* positionPid)
     		cerr << "ERROR: variable \'" << *positionPid << "\' is array type" << endl;
     		exit(0);
     	}
-        // TEST ME
-    	setRegister(code, variables[*arrayName]->memory_position);
-    	code.push_back("ADD " + to_string(variables[*positionPid]->memory_position));
     }
+
+    setRegister(code, variables[*positionPid]->memory_position);
+    code.push_back("STORE 11");
+    setRegister(code, variables[*arrayName]->memory_position);
+    code.push_back("ADDI 11");
     
     codeFragments.push_back(code);
 	return codeFragments.size() - 1;
