@@ -577,12 +577,20 @@ int gen_expr_mult(int v1, int v2)
 {
     if(CODE_DBG) cout << __FUNCTION__ << endl;
 
-    vector<string> code = codeFragments[v1];
+    vector<string> code = codeFragments[v2];
+    code.push_back("STORE 3");
+    code.push_back("LOADI 3");
+    code.push_back("STORE 1");
+    code.insert(code.end(), codeFragments[v1].begin(), codeFragments[v1].end());
     code.push_back("STORE 2");
     code.push_back("LOADI 2");
     code.push_back("STORE 0");
-    code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
-    code.push_back("STORE 2");
+
+    code.push_back("SUB 1");
+    code.push_back("JZERO 2");
+    code.push_back("JUMP 5");
+    code.push_back("LOADI 3");
+    code.push_back("STORE 0");
     code.push_back("LOADI 2");
     code.push_back("STORE 1");
 
