@@ -154,7 +154,6 @@ identifier:
 using namespace std;
 
 int memory_used = 14;
-int currentReg = 0;
 vector<vector<string>> codeFragments;
 std::vector<int> iterators;
 std::map<string, std::shared_ptr<value_t>> variables;
@@ -289,6 +288,7 @@ int gen_command_for_to(string* pid, int v1, int v2, int cmds)
         memory_used++;
         cout << "nie ma więc zadeklaruj, a na koniec wypierdol" << endl;
     }
+    // TODO: case z ponowna deklaracja zmiennej (jako zwykla i jako iterator)
 
     int commandsLength = codeFragments[cmds].size();
     
@@ -299,14 +299,19 @@ int gen_command_for_to(string* pid, int v1, int v2, int cmds)
     code.push_back("STORE 9");
     code.push_back("LOADI 9");
     code.push_back("STOREI 8");
-    setRegister(code, variables[*pid]->memory_position);
-    code.push_back("STORE 8");
-
-    int length_1 = code.size();
 
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
     code.push_back("STORE 9");
     code.push_back("LOADI 9");
+    int limiterPosition = memory_used++;    
+    code.push_back("STORE " + to_string(limiterPosition));
+    
+    int length_1 = code.size();
+
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+
+    code.push_back("LOAD " + to_string(limiterPosition));
     code.push_back("INC");
     code.push_back("SUBI 8");
     code.push_back("JZERO x+1");
@@ -359,15 +364,19 @@ int gen_command_for_downto(string* pid, int v1, int v2, int cmds)
     code.push_back("LOADI 9");
     code.push_back("STOREI 8");
 
-    int length_1 = code.size();
-
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
     code.push_back("STORE 9");
-    
+    code.push_back("LOADI 9");
+
+    int limiterPosition = memory_used++;    
+    code.push_back("STORE " + to_string(limiterPosition));
+
+    int length_1 = code.size();
+
     setRegister(code, variables[*pid]->memory_position);
     code.push_back("STORE 8");
     code.push_back("LOADI 8");
-    code.push_back("SUBI 9");
+    code.push_back("SUB " + to_string(limiterPosition));
     code.push_back("JZERO x+1");
 
     int length_2 = code.size();
@@ -390,7 +399,7 @@ int gen_command_for_downto(string* pid, int v1, int v2, int cmds)
         }
     }
 
-    code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+    //code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
 
     codeFragments.push_back(code);
 
@@ -896,7 +905,7 @@ int gen_ArrayPid(std::string* arrayName, std::string* positionPid)
         variables[*positionPid] = make_shared<value_t>(0, 1, memory_used, *positionPid);
         memory_used++;
 
-        cout << "declare possible iterator " << endl;
+        cout << "declare possible iterator " << *positionPid << endl;
     }
     else
     {

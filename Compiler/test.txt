@@ -1,8 +1,10 @@
-( progrm14.imp - insertion sort )
 VAR
 	a
 BEGIN
-	a := 1000 * 10;
-
-	WRITE a;
+	a := 100;
+	FOR i FROM 0 TO a DO
+		WRITE i;
+		a := a - 1;
+		WRITE a;
+	ENDFOR
 END
