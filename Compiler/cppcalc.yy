@@ -129,7 +129,7 @@ condition:
 
 value:
     num                                                                   {if(DBG) cout << "num " << $1 << " "; $$ = gen_ConstNumber($1);}
-|   identifier                                                            {if(DBG) cout << "id" << endl; $$ = $1;}
+|   identifier                                                            {if(DBG) cout << "id" << endl; checkInitialization($1); $$ = $1;}
 ;
 
 identifier:
@@ -156,6 +156,8 @@ using namespace std;
 int memory_used = 14;
 vector<vector<string>> codeFragments;
 std::vector<int> iterators;
+std::vector<int> uninitialized;
+
 std::map<string, std::shared_ptr<value_t>> variables;
 
 void endThisShit(int codePtr)
@@ -165,7 +167,7 @@ void endThisShit(int codePtr)
 
     if(isAnyPossibleIteratorLeft())
     {
-        cout << "jakas niezadeklarowana zmienna - wypierdol progarm" << endl;
+        cout << "ERROR: undeclared variable" << endl;
         exit(0);
     }
     finalizeJumps(codePtr);
@@ -194,10 +196,24 @@ int concatenate_codes(int c1, int c2)
 int gen_commnad_assign(int idt, int expr)
 {
 	if(CODE_DBG) cout << __FUNCTION__ << endl;
-
-    if(!iterators.empty() && std::find(iterators.begin(), iterators.end(), idt) != iterators.end())
+    
+    if(find(uninitialized.begin(), uninitialized.end(), idt) != uninitialized.end())
     {
-        cout << "modyfikacja iteratora - wypierdol program" << endl;
+        if(CODE_DBG) cout << "initialization by assignement" << endl;
+        uninitialized.erase(find(uninitialized.begin(), uninitialized.end(), idt));
+    }
+
+    // straszny, przeraźliwy HACK!!!!
+    if(!iterators.empty())
+    {
+        for(int possibleIterator : iterators)
+        {
+            if(codeFragments[possibleIterator] == codeFragments[idt])
+            {
+                cout << "ERROR: modified iterator" << endl;
+                exit(0);
+            }
+        }
     }
     
     vector<string> code = codeFragments[idt];                                           // zapisujemy adres zmiennej w rej a
@@ -282,11 +298,18 @@ int gen_command_for_to(string* pid, int v1, int v2, int cmds)
 {
     if(CODE_DBG) cout << __FUNCTION__ << endl;
     
-    if(variables.find(*pid) == variables.end())
+    if(variables.find(*pid) != variables.end())
+    {
+        if(!variables[*pid]->possibleIterator)
+        {
+            cerr << "ERROR: redeclaration as iterator" << endl;
+            exit(0);
+        }
+    }
+    else
     {
         variables[*pid] = make_shared<value_t>(0, 1, memory_used, *pid);
         memory_used++;
-        cout << "nie ma więc zadeklaruj, a na koniec wypierdol" << endl;
     }
     // TODO: case z ponowna deklaracja zmiennej (jako zwykla i jako iterator)
 
@@ -351,7 +374,6 @@ int gen_command_for_downto(string* pid, int v1, int v2, int cmds)
     {
         variables[*pid] = make_shared<value_t>(0, 1, memory_used, *pid);
         memory_used++;
-        cout << "nie ma więc zadeklaruj, a na koniec wypierdol" << endl;
     }
 
     int commandsLength = codeFragments[cmds].size();
@@ -399,7 +421,13 @@ int gen_command_for_downto(string* pid, int v1, int v2, int cmds)
         }
     }
 
-    //code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
+    setRegister(code, variables[*pid]->memory_position);
+    code.push_back("STORE 8");
+    code.push_back("LOAD " + to_string(limiterPosition));
+    code.push_back("SUBI 8");
+    code.push_back("JZERO 2");
+    code.push_back("JUMP " + to_string(codeFragments[cmds].size()+1));
+        code.insert(code.end(), codeFragments[cmds].begin(), codeFragments[cmds].end());
 
     codeFragments.push_back(code);
 
@@ -426,6 +454,12 @@ int gen_command_read(int pid)
 {
     if(CODE_DBG) cout << __FUNCTION__ << endl;
     
+    if(find(uninitialized.begin(), uninitialized.end(), pid) != uninitialized.end())
+    {
+        if(CODE_DBG) cout << "initialization by read" << endl;
+        uninitialized.erase(find(uninitialized.begin(), uninitialized.end(), pid));
+    }
+
     vector<string> code = codeFragments[pid];
 
     code.push_back("STORE 8");
@@ -643,6 +677,8 @@ int gen_expr_mult(int v1, int v2)
 
 int gen_expr_div(int v1, int v2)
 {
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
+
     vector<string> code;
     code.push_back("ZERO");
     code.push_back("STORE 0");
@@ -654,12 +690,12 @@ int gen_expr_div(int v1, int v2)
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
     code.push_back("STORE 5");
     code.push_back("LOADI 5");
+    code.push_back("JZERO " + to_string(codeFragments[v1].size() + 50));
     code.push_back("STORE 1");
     code.insert(code.end(), codeFragments[v1].begin(), codeFragments[v1].end());
     code.push_back("STORE 5");
     code.push_back("LOADI 5");
     code.push_back("STORE 0");
-
 
 
     // zapisz P pod mem[5], zacznij liczyć n
@@ -727,6 +763,8 @@ int gen_expr_div(int v1, int v2)
 
 int gen_expr_mod(int v1, int v2)
 {
+    if(CODE_DBG) cout << __FUNCTION__ << endl;
+
     vector<string> code;
     code.push_back("ZERO");
     code.push_back("STORE 0");
@@ -738,6 +776,7 @@ int gen_expr_mod(int v1, int v2)
     code.insert(code.end(), codeFragments[v2].begin(), codeFragments[v2].end());
     code.push_back("STORE 5");
     code.push_back("LOADI 5");
+    code.push_back("JZERO " + to_string(codeFragments[v1].size() + 50));
     code.push_back("STORE 1");
     code.insert(code.end(), codeFragments[v1].begin(), codeFragments[v1].end());
     code.push_back("STORE 5");
@@ -832,7 +871,7 @@ int gen_ConstNumber(unsigned long long num)
 
 int gen_Pidentifier(std::string* name)
 {
-    if(CODE_DBG) cout << __FUNCTION__ << *name << endl;
+    if(CODE_DBG) cout << __FUNCTION__ << " " << *name << endl;
 	vector<string> code;
 
 	if(variables.find(*name) == variables.end())
@@ -842,7 +881,7 @@ int gen_Pidentifier(std::string* name)
 
         setRegister(code, variables[*name]->memory_position);
         iterators.push_back(codeFragments.size());
-        cout << "declare possible iterator " << *name << endl;
+        if(CODE_DBG) cout << "declare possible iterator " << *name << endl;
     }
     else
     {
@@ -850,11 +889,18 @@ int gen_Pidentifier(std::string* name)
     		cerr << "ERROR: variable \'" << *name << "\' is array type" << endl;
     		exit(0);
     	}
+        if(!variables[*name]->initialized)
+        {
+            if(CODE_DBG) cout << "set uninitialized " << code.size() << endl;
+            uninitialized.push_back(codeFragments.size());
+            variables[*name]->initialized = true;
+        }
 
     	setRegister(code, variables[*name]->memory_position);
     }
 
-    codeFragments.push_back(code);
+    
+    codeFragments.push_back(code); 
     return codeFragments.size() - 1;
 
 }
@@ -905,7 +951,7 @@ int gen_ArrayPid(std::string* arrayName, std::string* positionPid)
         variables[*positionPid] = make_shared<value_t>(0, 1, memory_used, *positionPid);
         memory_used++;
 
-        cout << "declare possible iterator " << *positionPid << endl;
+        if(CODE_DBG) cout << "declare possible iterator " << *positionPid << endl;
     }
     else
     {
@@ -936,6 +982,7 @@ void declareVariable(string* name)
     if(variables.find(*name) == variables.end())
     {
         variables[*name] = make_shared<value_t>(0, 0, memory_used, *name);
+        variables[*name]->initialized = false;
         memory_used++;
 
         if(CODE_DBG) cout << "memory usage: " << to_string(memory_used) << endl;
@@ -1042,6 +1089,16 @@ bool isAnyPossibleIteratorLeft()
     }
 
     return false;
+}
+
+void checkInitialization(int pid)
+{
+    if(CODE_DBG) cout << "checking if initialized " << pid << endl;
+    if(find(uninitialized.begin(), uninitialized.end(), pid) != uninitialized.end())
+    {
+        cerr << "ERROR: use of uninitialized variable" << endl;
+        exit(0);
+    }
 }
 
 int main() 

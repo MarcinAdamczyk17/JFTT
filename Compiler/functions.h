@@ -45,3 +45,4 @@ void printVector(std::vector<std::string>&);
 void resolveJump(std::string&, int);
 void finalizeJumps(int);
 bool isAnyPossibleIteratorLeft();
+void checkInitialization(int);

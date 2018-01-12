@@ -1,10 +1,11 @@
+( errorf3.imp - modyfikacja iteratora w petli )
 VAR
-	a
+    c
 BEGIN
-	a := 100;
-	FOR i FROM 0 TO a DO
-		WRITE i;
-		a := a - 1;
-		WRITE a;
-	ENDFOR
+    c := 100%8;
+
+    WRITE c;
+
+    
 END
+

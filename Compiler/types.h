@@ -20,6 +20,7 @@ public:
 
     bool isArray = false;
     bool possibleIterator = false;
+    bool initialized = true;
     int capacity;
     int memory_position;
 
